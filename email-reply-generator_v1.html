@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>メール返信ジェネレーター</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    background: #f5f3f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px;
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  }
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+    max-width: 680px;
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .header {
+    padding: 28px 28px 20px;
+    border-bottom: 1px solid #eee;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #4e7ecf;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.02em;
+  }
+  .subtitle {
+    font-size: 12px;
+    color: #999;
+    margin-top: 6px;
+    letter-spacing: 0.04em;
+  }
+  .section {
+    padding: 20px 28px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .section:last-of-type {
+    border-bottom: none;
+  }
+  .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 8px;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-label .badge {
+    font-size: 10px;
+    background: #f0eeeb;
+    color: #999;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 400;
+  }
+  .section-label .badge.required {
+    background: #fef3e6;
+    color: #d4880f;
+  }
+  textarea {
+    width: 100%;
+    border: 1px solid #e8e8e8;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #333;
+    resize: vertical;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    background: #fafaf8;
+  }
+  textarea:focus {
+    outline: none;
+    border-color: #4e7ecf;
+    background: #fff;
+  }
+  textarea::placeholder {
+    color: #bbb;
+  }
+  .api-key-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .api-key-input {
+    flex: 1;
+    border: 1px solid #e8e8e8;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #333;
+    font-family: monospace;
+    background: #fafaf8;
+    transition: border-color 0.2s;
+  }
+  .api-key-input:focus {
+    outline: none;
+    border-color: #4e7ecf;
+    background: #fff;
+  }
+  .btn-toggle-key {
+    background: none;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #888;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .btn-toggle-key:hover { background: #f5f5f5; }
+  .actions {
+    display: flex;
+    gap: 10px;
+    padding: 0 28px 24px;
+  }
+  .btn {
+    flex: 1;
+    padding: 14px 0;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.04em;
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-generate {
+    background: #4e7ecf;
+    color: #fff;
+  }
+  .btn-generate:hover:not(:disabled) { background: #3d6ab8; }
+  .btn-copy {
+    background: #1a1a1a;
+    color: #fff;
+  }
+  .btn-copy.copied {
+    background: #4ecdc4;
+  }
+  .btn-clear {
+    background: #f0eeeb;
+    color: #555;
+  }
+  .btn:active:not(:disabled) { transform: scale(0.97); }
+
+  .result-area {
+    padding: 20px 28px;
+    display: none;
+  }
+  .result-area.show { display: block; }
+  .result-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+  }
+  .result-text {
+    font-size: 15px;
+    line-height: 2;
+    color: #333;
+    white-space: pre-wrap;
+    background: #f8fafd;
+    border: 1px solid #e4ecf5;
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .result-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .result-actions .btn {
+    padding: 12px 0;
+    font-size: 13px;
+  }
+
+  .loading {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 20px 28px;
+    color: #888;
+    font-size: 14px;
+  }
+  .loading.show { display: flex; }
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid #e0e0e0;
+    border-top-color: #4e7ecf;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-msg {
+    display: none;
+    padding: 12px 16px;
+    margin: 0 28px 16px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #b91c1c;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .error-msg.show { display: block; }
+
+  .history-section {
+    border-top: 1px solid #eee;
+    padding: 20px 28px;
+    display: none;
+  }
+  .history-section.show { display: block; }
+  .history-label {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .history-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: #fafaf8;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #888;
+    cursor: pointer;
+    margin-bottom: 6px;
+    transition: background 0.15s;
+    line-height: 1.5;
+    font-family: inherit;
+  }
+  .history-item:hover { background: #f0eeeb; }
+
+  .collapsible-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+  .collapsible-header .arrow {
+    font-size: 12px;
+    color: #bbb;
+    transition: transform 0.2s;
+  }
+  .collapsible-header.open .arrow {
+    transform: rotate(180deg);
+  }
+  .collapsible-body {
+    display: none;
+    margin-top: 10px;
+  }
+  .collapsible-body.open {
+    display: block;
+  }
+
+  .footer {
+    margin-top: 8px;
+    font-size: 11px;
+    color: #bbb;
+    letter-spacing: 0.02em;
+    text-align: center;
+  }
+
+  .tone-options {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .tone-chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    font-size: 12px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tone-chip.selected {
+    border-color: #4e7ecf;
+    background: #eef3fc;
+    color: #4e7ecf;
+    font-weight: 600;
+  }
+  .tone-chip:hover { border-color: #aaa; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <div class="dot"></div>
+    <h1>メール返信ジェネレーター</h1>
+    <p class="subtitle">あなたの文体を踏襲した返信文を生成</p>
+  </div>
+
+  <!-- API Key -->
+  <div class="section">
+    <p class="section-label">API Key <span class="badge required">必須</span></p>
+    <div class="api-key-row">
+      <input type="password" class="api-key-input" id="apiKeyInput" placeholder="sk-ant-..." />
+      <button class="btn-toggle-key" id="toggleKeyBtn" onclick="toggleApiKeyVisibility()">表示</button>
+    </div>
+  </div>
+
+  <!-- Writing Style Samples -->
+  <div class="section">
+    <div class="collapsible-header" id="styleHeader" onclick="toggleSection('style')">
+      <p class="section-label" style="margin-bottom:0">文体サンプル <span class="badge">推奨</span></p>
+      <span class="arrow">▼</span>
+    </div>
+    <div class="collapsible-body" id="styleBody">
+      <p style="font-size:12px; color:#aaa; margin-bottom:8px; line-height:1.6;">過去に自分が書いたメールを貼り付けてください。複数あるほど文体の再現精度が上がります。</p>
+      <textarea id="styleSamples" rows="6" placeholder="例：&#10;お世話になっております。&#10;先日いただいたご提案について、社内で確認いたしました。&#10;方向性としては問題ないかと思いますので、次のステップに進めていただければ幸いです。&#10;引き続きよろしくお願いいたします。"></textarea>
+    </div>
+  </div>
+
+  <!-- Received Email -->
+  <div class="section">
+    <p class="section-label">返信したいメール <span class="badge required">必須</span></p>
+    <textarea id="receivedEmail" rows="8" placeholder="返信したい受信メールの内容をここに貼り付けてください"></textarea>
+  </div>
+
+  <!-- Reply Tone -->
+  <div class="section">
+    <p class="section-label">トーン</p>
+    <div class="tone-options" id="toneOptions">
+      <button class="tone-chip selected" data-tone="polite" onclick="selectTone(this)">丁寧</button>
+      <button class="tone-chip" data-tone="casual" onclick="selectTone(this)">カジュアル</button>
+      <button class="tone-chip" data-tone="formal" onclick="selectTone(this)">フォーマル</button>
+      <button class="tone-chip" data-tone="friendly" onclick="selectTone(this)">フレンドリー</button>
+    </div>
+  </div>
+
+  <!-- Additional Instructions -->
+  <div class="section">
+    <div class="collapsible-header" id="instructionHeader" onclick="toggleSection('instruction')">
+      <p class="section-label" style="margin-bottom:0">追加指示 <span class="badge">任意</span></p>
+      <span class="arrow">▼</span>
+    </div>
+    <div class="collapsible-body" id="instructionBody">
+      <textarea id="additionalInstructions" rows="3" placeholder="例：日程は来週の火曜を提案してほしい / お断りの内容にしたい / 感謝を強調してほしい"></textarea>
+    </div>
+  </div>
+
+  <!-- Generate Button -->
+  <div class="actions">
+    <button class="btn btn-generate" id="generateBtn" onclick="generateReply()">返信文を生成</button>
+  </div>
+
+  <!-- Error -->
+  <div class="error-msg" id="errorMsg"></div>
+
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <span>返信文を生成中...</span>
+  </div>
+
+  <!-- Result -->
+  <div class="result-area" id="resultArea">
+    <p class="result-label">生成された返信文</p>
+    <div class="result-text" id="resultText"></div>
+    <div class="result-actions">
+      <button class="btn btn-copy" id="copyBtn" onclick="copyResult()">コピー</button>
+      <button class="btn btn-generate" onclick="generateReply()">↻ 再生成</button>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="history-section" id="historySection">
+    <p class="history-label">生成履歴（クリックで復元）</p>
+    <div id="historyList"></div>
+  </div>
+</div>
+
+<p class="footer">Powered by Claude API / メール内容はAnthropicのAPIにのみ送信されます</p>
+
+<script>
+// --- State ---
+let currentResult = "";
+const history = [];
+let selectedTone = "polite";
+
+// --- Init ---
+window.addEventListener("DOMContentLoaded", () => {
+  const savedKey = localStorage.getItem("email_reply_api_key");
+  if (savedKey) {
+    document.getElementById("apiKeyInput").value = savedKey;
+  }
+});
+
+// --- API Key ---
+function toggleApiKeyVisibility() {
+  const input = document.getElementById("apiKeyInput");
+  const btn = document.getElementById("toggleKeyBtn");
+  if (input.type === "password") {
+    input.type = "text";
+    btn.textContent = "隠す";
+  } else {
+    input.type = "password";
+    btn.textContent = "表示";
+  }
+}
+
+// --- Collapsible Sections ---
+function toggleSection(name) {
+  const header = document.getElementById(name + "Header");
+  const body = document.getElementById(name + "Body");
+  header.classList.toggle("open");
+  body.classList.toggle("open");
+}
+
+// --- Tone Selection ---
+function selectTone(el) {
+  document.querySelectorAll(".tone-chip").forEach(c => c.classList.remove("selected"));
+  el.classList.add("selected");
+  selectedTone = el.dataset.tone;
+}
+
+// --- Build Prompt ---
+function buildPrompt() {
+  const styleSamples = document.getElementById("styleSamples").value.trim();
+  const receivedEmail = document.getElementById("receivedEmail").value.trim();
+  const instructions = document.getElementById("additionalInstructions").value.trim();
+
+  const toneMap = {
+    polite: "丁寧語を基本とした礼儀正しいトーン",
+    casual: "親しみやすいカジュアルなトーン",
+    formal: "ビジネスフォーマルな硬めのトーン",
+    friendly: "温かみのあるフレンドリーなトーン"
+  };
+
+  let systemPrompt = `あなたはメール返信の作成を支援するアシスタントです。
+ユーザーの文体を忠実に再現しながら、受信メールに対する適切な返信文を生成してください。
+
+## ルール
+- ユーザーの文体サンプルが提供されている場合、その言い回し・語尾・敬語レベル・文の長さ・改行スタイルなどを分析し、できる限り再現してください
+- 文体サンプルがない場合は、指定されたトーンに従って自然な日本語メールを作成してください
+- 返信文のみを出力してください（説明や補足は不要です）
+- 件名は含めず、本文のみを生成してください
+- 自然で人間が書いたようなメールにしてください`;
+
+  let userPrompt = "";
+
+  if (styleSamples) {
+    userPrompt += `## 私の文体サンプル（この書き方を踏襲してください）\n\n${styleSamples}\n\n`;
+  }
+
+  userPrompt += `## トーン\n${toneMap[selectedTone]}\n\n`;
+  userPrompt += `## 返信したいメール\n\n${receivedEmail}\n\n`;
+
+  if (instructions) {
+    userPrompt += `## 追加指示\n${instructions}\n\n`;
+  }
+
+  userPrompt += `上記のメールに対する返信文を生成してください。`;
+
+  return { systemPrompt, userPrompt };
+}
+
+// --- Generate Reply ---
+async function generateReply() {
+  const apiKey = document.getElementById("apiKeyInput").value.trim();
+  const receivedEmail = document.getElementById("receivedEmail").value.trim();
+
+  // Validation
+  if (!apiKey) {
+    showError("API Keyを入力してください。");
+    return;
+  }
+  if (!receivedEmail) {
+    showError("返信したいメールの内容を入力してください。");
+    return;
+  }
+
+  // Save API key
+  localStorage.setItem("email_reply_api_key", apiKey);
+
+  // UI state
+  hideError();
+  document.getElementById("generateBtn").disabled = true;
+  document.getElementById("loading").classList.add("show");
+  document.getElementById("resultArea").classList.remove("show");
+
+  const { systemPrompt, userPrompt } = buildPrompt();
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-opus-4-6",
+        max_tokens: 4096,
+        thinking: { type: "adaptive" },
+        system: systemPrompt,
+        messages: [
+          { role: "user", content: userPrompt }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      const errorMessage = errorData?.error?.message || `HTTP ${response.status}`;
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+
+    // Extract text from response (skip thinking blocks)
+    let replyText = "";
+    for (const block of data.content) {
+      if (block.type === "text") {
+        replyText += block.text;
+      }
+    }
+
+    if (!replyText) {
+      throw new Error("返信文の生成に失敗しました。");
+    }
+
+    // Save previous result to history
+    if (currentResult) {
+      history.unshift(currentResult);
+      if (history.length > 10) history.pop();
+      renderHistory();
+    }
+
+    currentResult = replyText.trim();
+    document.getElementById("resultText").textContent = currentResult;
+    document.getElementById("resultArea").classList.add("show");
+
+  } catch (err) {
+    showError("エラー: " + err.message);
+  } finally {
+    document.getElementById("generateBtn").disabled = false;
+    document.getElementById("loading").classList.remove("show");
+  }
+}
+
+// --- Copy ---
+function copyResult() {
+  navigator.clipboard.writeText(currentResult).then(() => {
+    const btn = document.getElementById("copyBtn");
+    btn.textContent = "✓ コピーしました";
+    btn.classList.add("copied");
+    setTimeout(() => {
+      btn.textContent = "コピー";
+      btn.classList.remove("copied");
+    }, 2000);
+  });
+}
+
+// --- History ---
+function useFromHistory(index) {
+  const item = history.splice(index, 1)[0];
+  currentResult = item;
+  document.getElementById("resultText").textContent = currentResult;
+  document.getElementById("resultArea").classList.add("show");
+  renderHistory();
+}
+
+function renderHistory() {
+  const section = document.getElementById("historySection");
+  const list = document.getElementById("historyList");
+  if (history.length === 0) {
+    section.classList.remove("show");
+    return;
+  }
+  section.classList.add("show");
+  list.innerHTML = history.map((item, i) =>
+    `<button class="history-item" onclick="useFromHistory(${i})">${escapeHtml(item.replace(/\n/g, " ").slice(0, 80))}...</button>`
+  ).join("");
+}
+
+// --- Error ---
+function showError(msg) {
+  const el = document.getElementById("errorMsg");
+  el.textContent = msg;
+  el.classList.add("show");
+}
+
+function hideError() {
+  document.getElementById("errorMsg").classList.remove("show");
+}
+
+// --- Util ---
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+</script>
+</body>
+</html>
