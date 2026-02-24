@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ココナラ評価文ジェネレーター</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    background: #f5f3f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  }
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+    max-width: 520px;
+    width: 100%;
+    overflow: hidden;
+  }
+  .header {
+    padding: 28px 28px 20px;
+    border-bottom: 1px solid #eee;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #4ecdc4;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.02em;
+  }
+  .subtitle {
+    font-size: 12px;
+    color: #999;
+    margin-top: 6px;
+    letter-spacing: 0.04em;
+  }
+  .text-area {
+    padding: 24px 28px;
+    min-height: 120px;
+  }
+  .review-text {
+    font-size: 15px;
+    line-height: 2;
+    color: #333;
+    white-space: pre-line;
+  }
+  .actions {
+    display: flex;
+    gap: 10px;
+    padding: 0 28px 28px;
+  }
+  .btn {
+    flex: 1;
+    padding: 14px 0;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.04em;
+  }
+  .btn-copy {
+    background: #1a1a1a;
+    color: #fff;
+  }
+  .btn-copy.copied {
+    background: #4ecdc4;
+  }
+  .btn-regen {
+    background: #f0eeeb;
+    color: #555;
+  }
+  .btn:active { transform: scale(0.97); }
+  .history-section {
+    border-top: 1px solid #eee;
+    padding: 20px 28px;
+    display: none;
+  }
+  .history-section.show { display: block; }
+  .history-label {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .history-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: #fafaf8;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #888;
+    cursor: pointer;
+    margin-bottom: 6px;
+    transition: background 0.15s;
+    line-height: 1.5;
+    font-family: inherit;
+  }
+  .history-item:hover { background: #f0eeeb; }
+  .footer {
+    margin-top: 16px;
+    font-size: 11px;
+    color: #bbb;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <div class="dot"></div>
+    <h1>ココナラ評価文ジェネレーター</h1>
+    <p class="subtitle">出品者 → 購入者への評価</p>
+  </div>
+  <div class="text-area">
+    <p class="review-text" id="reviewText"></p>
+  </div>
+  <div class="actions">
+    <button class="btn btn-copy" id="copyBtn" onclick="copyText()">コピー</button>
+    <button class="btn btn-regen" onclick="regenerate()">↻ 別の文章</button>
+  </div>
+  <div class="history-section" id="historySection">
+    <p class="history-label">履歴（タップで復元）</p>
+    <div id="historyList"></div>
+  </div>
+</div>
+<p class="footer" id="footer"></p>
+
+<script>
+const OPENING = [
+  "この度はご依頼いただき誠にありがとうございました。",
+  "この度はご相談いただき誠にありがとうございました。",
+  "この度はご購入いただきありがとうございました。",
+  "この度はご利用いただき誠にありがとうございました。",
+  "この度はお取引いただきありがとうございました。",
+  "今回はご依頼いただき誠にありがとうございました。",
+  "今回はご相談いただきありがとうございました。",
+];
+
+const COMPLIMENT = [
+  "丁寧にご対応いただき、安心して制作に集中することができました。",
+  "ご要望を明確にお伝えいただけたので、スムーズに制作を進めることができました。",
+  "迅速にご確認・ご返信いただけたおかげで、スケジュール通りに進行できました。",
+  "こちらの提案にも柔軟にご対応いただき、とてもやりやすかったです。",
+  "細やかなご確認をいただけたおかげで、安心して進めることができました。",
+  "レスポンスが早く、大変スムーズなお取引でした。",
+  "素材のご共有もスムーズで、制作に集中できる環境をいただきました。",
+  "終始丁寧なやり取りで、気持ちよくお仕事させていただきました。",
+  "ご要望が具体的で、方向性を共有しやすく助かりました。",
+  "柔軟にご対応いただき、円滑に制作を進めることができました。",
+];
+
+const CLOSING = [
+  "またお力になれることがあればお気軽にご相談ください。",
+  "今後ともお力になれれば幸いです。",
+  "また何かございましたらお気軽にお声がけください。",
+  "引き続きよろしくお願いいたします。",
+  "今後とも何かあればお気軽にご相談いただければ幸いです。",
+  "またご縁がありましたらよろしくお願いいたします。",
+  "今後のご活躍を応援しております。またお気軽にご相談ください。",
+  "引き続きどうぞよろしくお願いいたします。",
+  "微力ながらご事業の発展に貢献できていれば大変嬉しいです。",
+  "またお力添えできる機会がありましたらお気軽にお声がけください。",
+];
+
+const history = [];
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const generate = () => `${pick(OPENING)}\n${pick(COMPLIMENT)}\n${pick(CLOSING)}`;
+
+let currentText = "";
+
+function render(text) {
+  currentText = text;
+  document.getElementById("reviewText").textContent = text;
+  const btn = document.getElementById("copyBtn");
+  btn.textContent = "コピー";
+  btn.classList.remove("copied");
+}
+
+function copyText() {
+  navigator.clipboard.writeText(currentText).then(() => {
+    const btn = document.getElementById("copyBtn");
+    btn.textContent = "✓ コピーしました";
+    btn.classList.add("copied");
+    setTimeout(() => {
+      btn.textContent = "コピー";
+      btn.classList.remove("copied");
+    }, 2000);
+  });
+}
+
+function regenerate() {
+  if (currentText) {
+    history.unshift(currentText);
+    if (history.length > 10) history.pop();
+    renderHistory();
+  }
+  render(generate());
+}
+
+function useFromHistory(index) {
+  const item = history.splice(index, 1)[0];
+  render(item);
+  renderHistory();
+}
+
+function renderHistory() {
+  const section = document.getElementById("historySection");
+  const list = document.getElementById("historyList");
+  if (history.length === 0) {
+    section.classList.remove("show");
+    return;
+  }
+  section.classList.add("show");
+  list.innerHTML = history.map((item, i) =>
+    `<button class="history-item" onclick="useFromHistory(${i})">${item.replace(/\n/g, " ").slice(0, 60)}...</button>`
+  ).join("");
+}
+
+// Init
+const total = OPENING.length * COMPLIMENT.length * CLOSING.length;
+document.getElementById("footer").textContent = `パーツ組み合わせ: ${OPENING.length} × ${COMPLIMENT.length} × ${CLOSING.length} = ${total}通り`;
+render(generate());
+</script>
+</body>
+</html>
