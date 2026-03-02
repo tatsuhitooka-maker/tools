@@ -13,38 +13,22 @@
     color: #f5f5f5;
     padding: 20px 16px 40px;
   }
-  .container {
-    max-width: 640px;
-    margin: 0 auto;
-  }
+  .container { max-width: 640px; margin: 0 auto; }
 
   /* Header */
-  .header {
-    text-align: center;
-    padding: 32px 0 28px;
-  }
+  .header { text-align: center; padding: 32px 0 28px; }
   .header-icon {
-    width: 48px; height: 48px;
-    border-radius: 14px;
+    width: 48px; height: 48px; border-radius: 14px;
     background: linear-gradient(135deg, #fff 0%, #ddd 100%);
     margin: 0 auto 16px;
     display: flex; align-items: center; justify-content: center;
     font-size: 24px; color: #000;
   }
-  h1 {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: #fff;
-  }
-  .subtitle {
-    font-size: 13px;
-    color: #777;
-    margin-top: 6px;
-  }
+  h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: #fff; }
+  .subtitle { font-size: 13px; color: #777; margin-top: 6px; }
 
-  /* Input Section */
-  .input-section {
+  /* Cards / Sections */
+  .card {
     background: #1a1a1a;
     border-radius: 16px;
     padding: 20px;
@@ -52,335 +36,212 @@
     border: 1px solid #2a2a2a;
   }
   .input-label {
-    font-size: 12px;
-    color: #888;
-    margin-bottom: 10px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-size: 12px; color: #888; margin-bottom: 10px;
+    letter-spacing: 0.04em; text-transform: uppercase;
   }
-  .url-input-wrap {
-    display: flex;
-    gap: 10px;
-  }
+
+  /* Inputs */
+  .url-input-wrap { display: flex; gap: 10px; }
   .url-input {
-    flex: 1;
-    background: #111;
-    border: 1px solid #333;
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-size: 14px;
-    color: #fff;
-    outline: none;
-    transition: border-color 0.2s;
-    font-family: inherit;
+    flex: 1; background: #111; border: 1px solid #333; border-radius: 10px;
+    padding: 14px 16px; font-size: 14px; color: #fff; outline: none;
+    transition: border-color 0.2s; font-family: inherit;
   }
-  .url-input:focus {
-    border-color: #555;
+  .url-input:focus { border-color: #555; }
+  .url-input::placeholder { color: #555; }
+  .btn-primary {
+    background: #fff; color: #000; border: none; border-radius: 10px;
+    padding: 14px 24px; font-size: 14px; font-weight: 700; cursor: pointer;
+    transition: all 0.2s; white-space: nowrap; font-family: inherit;
   }
-  .url-input::placeholder {
-    color: #555;
-  }
-  .btn-fetch {
-    background: #fff;
-    color: #000;
-    border: none;
-    border-radius: 10px;
-    padding: 14px 24px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-    font-family: inherit;
-  }
-  .btn-fetch:hover { background: #e0e0e0; }
-  .btn-fetch:active { transform: scale(0.97); }
-  .btn-fetch:disabled {
-    background: #333;
-    color: #666;
-    cursor: not-allowed;
-  }
+  .btn-primary:hover { background: #e0e0e0; }
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-primary:disabled { background: #333; color: #666; cursor: not-allowed; }
 
   /* Tabs */
   .tabs {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 16px;
-    background: #1a1a1a;
-    border-radius: 12px;
-    padding: 4px;
-    border: 1px solid #2a2a2a;
+    display: flex; gap: 4px; margin-bottom: 16px; background: #1a1a1a;
+    border-radius: 12px; padding: 4px; border: 1px solid #2a2a2a;
   }
   .tab {
-    flex: 1;
-    background: none;
-    border: none;
-    padding: 10px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #666;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: all 0.2s;
-    font-family: inherit;
+    flex: 1; background: none; border: none; padding: 10px; font-size: 13px;
+    font-weight: 600; color: #666; cursor: pointer; border-radius: 8px;
+    transition: all 0.2s; font-family: inherit;
   }
-  .tab.active {
-    background: #2a2a2a;
-    color: #fff;
-  }
+  .tab.active { background: #2a2a2a; color: #fff; }
   .tab .badge {
-    display: inline-block;
-    background: #333;
-    color: #999;
-    font-size: 11px;
-    padding: 1px 6px;
-    border-radius: 10px;
-    margin-left: 4px;
+    display: inline-block; background: #333; color: #999; font-size: 11px;
+    padding: 1px 6px; border-radius: 10px; margin-left: 4px;
   }
-  .tab.active .badge {
-    background: #444;
-    color: #ccc;
-  }
+  .tab.active .badge { background: #444; color: #ccc; }
 
   /* Status */
   .status-bar {
-    background: #1a1a1a;
-    border-radius: 12px;
-    padding: 16px 20px;
-    margin-bottom: 16px;
-    border: 1px solid #2a2a2a;
-    display: none;
+    background: #1a1a1a; border-radius: 12px; padding: 16px 20px;
+    margin-bottom: 16px; border: 1px solid #2a2a2a; display: none;
   }
   .status-bar.show { display: block; }
-  .status-text {
-    font-size: 13px;
-    color: #aaa;
-    line-height: 1.6;
-  }
-  .status-text .highlight {
-    color: #fff;
-    font-weight: 600;
-  }
+  .status-text { font-size: 13px; color: #aaa; line-height: 1.6; }
+  .status-text .hl { color: #fff; font-weight: 600; }
   .progress-bar {
-    height: 3px;
-    background: #2a2a2a;
-    border-radius: 2px;
-    margin-top: 12px;
-    overflow: hidden;
+    height: 3px; background: #2a2a2a; border-radius: 2px; margin-top: 12px; overflow: hidden;
   }
   .progress-fill {
-    height: 100%;
-    background: #fff;
-    border-radius: 2px;
-    transition: width 0.3s;
-    width: 0%;
+    height: 100%; background: #fff; border-radius: 2px; transition: width 0.3s; width: 0%;
   }
-  .progress-fill.indeterminate {
-    width: 30%;
-    animation: indeterminate 1.5s infinite ease-in-out;
+  .progress-fill.loading {
+    width: 30%; animation: loading 1.5s infinite ease-in-out;
   }
-  @keyframes indeterminate {
+  @keyframes loading {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(400%); }
   }
 
-  /* Posts Area */
-  .posts-area { margin-bottom: 16px; }
+  /* Panels */
   .panel { display: none; }
   .panel.active { display: block; }
 
   /* Post Card */
   .post-card {
-    background: #1a1a1a;
-    border-radius: 14px;
-    padding: 18px 20px;
-    margin-bottom: 10px;
-    border: 1px solid #2a2a2a;
-    transition: border-color 0.2s;
+    background: #1a1a1a; border-radius: 14px; padding: 18px 20px;
+    margin-bottom: 10px; border: 1px solid #2a2a2a; transition: border-color 0.2s;
   }
   .post-card:hover { border-color: #3a3a3a; }
   .post-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
   }
-  .post-user {
-    font-size: 14px;
-    font-weight: 700;
-    color: #fff;
-  }
-  .post-time {
-    font-size: 11px;
-    color: #666;
-  }
+  .post-user { font-size: 14px; font-weight: 700; color: #fff; }
+  .post-time { font-size: 11px; color: #666; }
   .post-text {
-    font-size: 14px;
-    line-height: 1.8;
-    color: #ddd;
-    white-space: pre-wrap;
-    word-break: break-word;
+    font-size: 14px; line-height: 1.8; color: #ddd; white-space: pre-wrap; word-break: break-word;
   }
   .post-media {
-    margin-top: 10px;
-    font-size: 12px;
-    color: #666;
-    padding: 8px 12px;
-    background: #111;
-    border-radius: 8px;
+    margin-top: 10px; font-size: 12px; color: #666; padding: 8px 12px;
+    background: #111; border-radius: 8px;
   }
   .post-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid #222;
+    display: flex; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #222;
   }
   .post-btn {
-    background: #222;
-    border: none;
-    color: #999;
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: inherit;
+    background: #222; border: none; color: #999; font-size: 12px;
+    padding: 6px 12px; border-radius: 6px; cursor: pointer;
+    transition: all 0.15s; font-family: inherit;
   }
   .post-btn:hover { background: #333; color: #fff; }
-  .post-btn.saved { color: #4ecdc4; }
   .post-btn.danger:hover { background: #3a1a1a; color: #e74c3c; }
-  .post-url {
-    font-size: 11px;
-    color: #555;
-    margin-top: 8px;
-    word-break: break-all;
-  }
-  .post-url a {
-    color: #555;
-    text-decoration: none;
-  }
+  .post-url { font-size: 11px; color: #555; margin-top: 8px; word-break: break-all; }
+  .post-url a { color: #555; text-decoration: none; }
   .post-url a:hover { color: #888; text-decoration: underline; }
 
-  /* Empty State */
-  .empty-state {
-    text-align: center;
-    padding: 48px 20px;
-    color: #555;
-    font-size: 14px;
-  }
+  /* Empty */
+  .empty-state { text-align: center; padding: 48px 20px; color: #555; font-size: 14px; }
   .empty-state .icon { font-size: 32px; margin-bottom: 12px; }
 
   /* Action Bar */
-  .action-bar {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-  }
+  .action-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
   .action-btn {
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    color: #aaa;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 10px 18px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: inherit;
+    background: #1a1a1a; border: 1px solid #2a2a2a; color: #aaa; font-size: 13px;
+    font-weight: 600; padding: 10px 18px; border-radius: 10px; cursor: pointer;
+    transition: all 0.2s; font-family: inherit;
   }
   .action-btn:hover { background: #222; color: #fff; border-color: #3a3a3a; }
   .action-btn.danger:hover { background: #2a1515; color: #e74c3c; border-color: #4a2020; }
+  .action-btn.accent { border-color: #335; color: #8af; }
+  .action-btn.accent:hover { background: #1a1a2a; border-color: #558; }
 
-  /* Manual Add Section */
+  /* Manual Section */
   .manual-section {
-    background: #1a1a1a;
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
-    border: 1px solid #2a2a2a;
-    display: none;
+    background: #1a1a1a; border-radius: 16px; padding: 20px; margin-bottom: 16px;
+    border: 1px solid #2a2a2a; display: none;
   }
   .manual-section.show { display: block; }
   .manual-textarea {
-    width: 100%;
-    min-height: 100px;
-    background: #111;
-    border: 1px solid #333;
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-size: 14px;
-    color: #fff;
-    outline: none;
-    resize: vertical;
-    line-height: 1.7;
-    font-family: inherit;
+    width: 100%; min-height: 100px; background: #111; border: 1px solid #333;
+    border-radius: 10px; padding: 14px 16px; font-size: 14px; color: #fff;
+    outline: none; resize: vertical; line-height: 1.7; font-family: inherit;
   }
   .manual-textarea::placeholder { color: #555; }
-  .manual-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 12px;
-  }
+  .manual-actions { display: flex; gap: 10px; margin-top: 12px; }
 
-  /* Account List */
-  .account-group {
-    margin-bottom: 20px;
+  /* Bookmarklet Section */
+  .bm-section { padding: 0; }
+  .bm-step {
+    padding: 18px 20px;
+    border-bottom: 1px solid #222;
   }
-  .account-header {
+  .bm-step:last-child { border-bottom: none; }
+  .bm-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; background: #333; border-radius: 50%;
+    font-size: 12px; font-weight: 700; color: #fff; margin-right: 10px;
+  }
+  .bm-step-title {
+    font-size: 14px; font-weight: 600; color: #eee; margin-bottom: 10px;
+  }
+  .bm-step-desc {
+    font-size: 13px; color: #888; line-height: 1.7; margin-left: 34px;
+  }
+  .bm-link {
+    display: inline-block;
+    background: linear-gradient(135deg, #2a4a8a 0%, #1a3060 100%);
+    color: #8abfff;
+    padding: 12px 24px;
+    border-radius: 10px;
     font-size: 14px;
     font-weight: 700;
-    color: #fff;
-    padding: 8px 0;
-    margin-bottom: 8px;
-    border-bottom: 1px solid #222;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    text-decoration: none;
+    cursor: grab;
+    border: 1px solid #3a5a9a;
+    margin: 8px 0 4px 34px;
+    transition: all 0.2s;
+    user-select: none;
   }
-  .account-count {
-    font-size: 12px;
-    color: #666;
-    font-weight: 400;
+  .bm-link:hover {
+    background: linear-gradient(135deg, #3a5a9a 0%, #2a4070 100%);
+    border-color: #4a6aaa;
   }
+  .bm-link:active { transform: scale(0.97); cursor: grabbing; }
+  .bm-note {
+    font-size: 11px; color: #666; margin: 6px 0 0 34px; line-height: 1.5;
+  }
+  .bm-import-area {
+    padding: 18px 20px;
+    border-top: 1px solid #333;
+    background: #151515;
+    border-radius: 0 0 16px 16px;
+  }
+  .bm-import-area .manual-textarea { min-height: 80px; margin-top: 10px; }
+
+  /* Account Group */
+  .account-group { margin-bottom: 20px; }
+  .account-header {
+    font-size: 14px; font-weight: 700; color: #fff; padding: 8px 0;
+    margin-bottom: 8px; border-bottom: 1px solid #222;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .account-count { font-size: 12px; color: #666; font-weight: 400; }
 
   /* Footer */
-  .footer {
-    text-align: center;
-    font-size: 11px;
-    color: #444;
-    margin-top: 24px;
-    letter-spacing: 0.02em;
-  }
+  .footer { text-align: center; font-size: 11px; color: #444; margin-top: 24px; }
 
   /* Toast */
   .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
+    position: fixed; bottom: 24px; left: 50%;
     transform: translateX(-50%) translateY(80px);
-    background: #fff;
-    color: #000;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 600;
-    opacity: 0;
-    transition: all 0.3s ease;
-    z-index: 100;
-    font-family: inherit;
+    background: #fff; color: #000; padding: 12px 24px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; opacity: 0; transition: all 0.3s ease;
+    z-index: 100; font-family: inherit; max-width: 90vw; text-align: center;
   }
-  .toast.show {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
   /* Responsive */
   @media (max-width: 480px) {
     .url-input-wrap { flex-direction: column; }
-    .btn-fetch { text-align: center; }
+    .btn-primary { text-align: center; }
     h1 { font-size: 20px; }
+    .bm-link { margin-left: 0; margin-top: 12px; display: block; text-align: center; }
+    .bm-note { margin-left: 0; }
+    .bm-step-desc { margin-left: 0; margin-top: 8px; }
   }
 </style>
 </head>
@@ -390,29 +251,14 @@
   <div class="header">
     <div class="header-icon">@</div>
     <h1>Threads投稿自動保存</h1>
-    <p class="subtitle">URLを入力して全投稿を取得・保存</p>
-  </div>
-
-  <!-- URL Input -->
-  <div class="input-section">
-    <p class="input-label">Threads URL</p>
-    <div class="url-input-wrap">
-      <input type="text" class="url-input" id="urlInput"
-        placeholder="https://www.threads.net/@username">
-      <button class="btn-fetch" id="fetchBtn" onclick="startFetch()">取得</button>
-    </div>
-  </div>
-
-  <!-- Status Bar -->
-  <div class="status-bar" id="statusBar">
-    <p class="status-text" id="statusText"></p>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
+    <p class="subtitle">ブックマークレットで全投稿を取得・保存</p>
   </div>
 
   <!-- Tabs -->
   <div class="tabs">
+    <button class="tab" onclick="switchTab('bookmarklet')" id="tabBm">
+      セットアップ
+    </button>
     <button class="tab active" onclick="switchTab('fetched')" id="tabFetched">
       取得結果<span class="badge" id="fetchedCount">0</span>
     </button>
@@ -421,21 +267,80 @@
     </button>
   </div>
 
-  <!-- Fetched Posts Panel -->
-  <div class="panel active" id="panelFetched">
-    <div class="action-bar" id="fetchedActions" style="display:none;">
-      <button class="action-btn" onclick="saveAllFetched()">全て保存</button>
-      <button class="action-btn" onclick="addManualPost()">手動で追加</button>
-    </div>
-    <div id="fetchedPosts">
-      <div class="empty-state">
-        <div class="icon">@</div>
-        <p>ThreadsのプロフィールURLを入力して<br>投稿を取得してください</p>
+  <!-- ===== Bookmarklet Setup Panel ===== -->
+  <div class="panel" id="panelBm">
+    <div class="card bm-section">
+      <div class="bm-step">
+        <p class="bm-step-title"><span class="bm-num">1</span>ブックマークレットを登録</p>
+        <p class="bm-step-desc">
+          下のボタンをブックマークバーにドラッグ&ドロップしてください。<br>
+          （スマホの場合: 長押し → URLをコピー → 新規ブックマークに貼り付け）
+        </p>
+        <a class="bm-link" id="bookmarkletLink" href="#">Threads取得</a>
+        <p class="bm-note">* ブックマークバーが非表示の場合: Ctrl+Shift+B (Mac: Cmd+Shift+B) で表示</p>
+      </div>
+      <div class="bm-step">
+        <p class="bm-step-title"><span class="bm-num">2</span>Threadsで実行</p>
+        <p class="bm-step-desc">
+          Threadsにログインした状態で、保存したいアカウントのプロフィールページを開き、
+          登録したブックマークレット「Threads取得」をクリック。<br>
+          自動で全投稿をスクロール読み込み＆抽出します。
+        </p>
+      </div>
+      <div class="bm-step">
+        <p class="bm-step-title"><span class="bm-num">3</span>このページに戻ってインポート</p>
+        <p class="bm-step-desc">
+          抽出が完了すると自動でクリップボードにコピーされます。<br>
+          このページに戻って「クリップボードからインポート」ボタンを押してください。
+        </p>
+      </div>
+      <div class="bm-import-area">
+        <p class="input-label">インポート</p>
+        <div class="action-bar" style="margin-bottom:0;">
+          <button class="action-btn accent" onclick="importFromClipboard()">クリップボードからインポート</button>
+          <button class="action-btn" onclick="togglePasteArea()">手動で貼り付け</button>
+        </div>
+        <textarea class="manual-textarea" id="pasteArea" placeholder="ブックマークレットの出力データをここに貼り付け..." style="display:none;"></textarea>
+        <div style="display:none;margin-top:10px;" id="pasteSubmit">
+          <button class="btn-primary" onclick="importFromPaste()" style="width:100%;">インポート実行</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Saved Posts Panel -->
+  <!-- ===== Fetched Posts Panel ===== -->
+  <div class="panel active" id="panelFetched">
+    <!-- URL Input -->
+    <div class="card">
+      <p class="input-label">URLから直接取得（プロキシ経由）</p>
+      <div class="url-input-wrap">
+        <input type="text" class="url-input" id="urlInput" placeholder="https://www.threads.net/@username">
+        <button class="btn-primary" id="fetchBtn" onclick="startFetch()">取得</button>
+      </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar" id="statusBar">
+      <p class="status-text" id="statusText"></p>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <div class="action-bar" id="fetchedActions" style="display:none;">
+      <button class="action-btn" onclick="saveAllFetched()">全て保存</button>
+      <button class="action-btn" onclick="toggleManualAdd()">手動で追加</button>
+    </div>
+
+    <div id="fetchedPosts">
+      <div class="empty-state">
+        <div class="icon">@</div>
+        <p>「セットアップ」タブでブックマークレットを<br>設定すると確実に全投稿を取得できます</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Saved Posts Panel ===== -->
   <div class="panel" id="panelSaved">
     <div class="action-bar" id="savedActions" style="display:none;">
       <button class="action-btn" onclick="exportJSON()">JSON出力</button>
@@ -451,364 +356,342 @@
     </div>
   </div>
 
-  <!-- Manual Add Section -->
+  <!-- Manual Add Section (shared) -->
   <div class="manual-section" id="manualSection">
     <p class="input-label">投稿を手動で追加</p>
     <input type="text" class="url-input" id="manualUser" placeholder="@username" style="margin-bottom:10px;">
     <textarea class="manual-textarea" id="manualText" placeholder="投稿の本文を入力..."></textarea>
     <div class="manual-actions">
-      <button class="btn-fetch" onclick="submitManualPost()" style="flex:1;">追加</button>
+      <button class="btn-primary" onclick="submitManualPost()" style="flex:1;">追加</button>
       <button class="action-btn" onclick="closeManualAdd()">キャンセル</button>
     </div>
   </div>
 
-  <p class="footer" id="footer">Threads投稿自動保存ツール v1.0</p>
+  <p class="footer" id="footer">Threads投稿自動保存ツール v2.0</p>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ===== State =====
+// ============================
+// Bookmarklet Code (生成)
+// ============================
+const BOOKMARKLET_SRC = `
+(async()=>{
+  const S=m=>{let e=document.getElementById('_tsSaver');if(!e){e=document.createElement('div');e.id='_tsSaver';e.style.cssText='position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#000;color:#fff;padding:16px 20px;text-align:center;font-size:15px;font-family:system-ui,sans-serif;box-shadow:0 2px 20px rgba(0,0,0,0.5);';document.body.appendChild(e);}e.innerHTML=m;};
+  const W=ms=>new Promise(r=>setTimeout(r,ms));
+
+  if(!location.hostname.includes('threads.net')){
+    alert('Threads.netのページで実行してください');return;
+  }
+
+  const um=location.pathname.match(/@([\\w.]+)/);
+  const username=um?um[1]:'unknown';
+
+  S('全投稿を読み込むためスクロール中... <br><small style="color:#888">しばらくお待ちください</small>');
+
+  let prevH=0,sameCount=0,scrollRounds=0,maxRounds=200;
+  while(sameCount<6&&scrollRounds<maxRounds){
+    window.scrollTo(0,document.body.scrollHeight);
+    await W(1200);
+    const h=document.body.scrollHeight;
+    if(h===prevH)sameCount++;else sameCount=0;
+    prevH=h;
+    scrollRounds++;
+    if(scrollRounds%5===0)S('スクロール中... ('+scrollRounds+'回 / 高さ:'+h+'px)');
+  }
+
+  window.scrollTo(0,0);
+  await W(500);
+  S('投稿を抽出中...');
+
+  const posts=[];
+  const seen=new Set();
+
+  const skipWords=['Threads','Home','Search','Activity','Profile','Log in','Sign up',
+    'Replies','Reposts','Followers','Following','Follow','Verified','Edit profile',
+    'Share profile','threads.net','See more','See less','Show replies','Hide replies',
+    username,'@'+username];
+
+  const isSkip=t=>{
+    if(t.length<3)return true;
+    if(skipWords.some(w=>t===w))return true;
+    if(/^\\d+(\\.\\d+)?[KMB]?$/.test(t.trim()))return true;
+    if(/^\\d+\\s*(likes?|replies|reposts?|followers?|following|posts?)$/i.test(t.trim()))return true;
+    if(/^(\\d+[hmdwys]|Just now|Yesterday|\\d+\\s*(hours?|minutes?|days?|weeks?|months?|years?)\\s*ago)$/i.test(t.trim()))return true;
+    return false;
+  };
+
+  const timeEls=document.querySelectorAll('time[datetime]');
+  const timeMap=new Map();
+  timeEls.forEach(te=>{
+    let p=te;
+    for(let i=0;i<15;i++){p=p.parentElement;if(!p)break;}
+    if(p)timeMap.set(p,te.getAttribute('datetime'));
+  });
+
+  const findTime=el=>{
+    let p=el;
+    for(let i=0;i<15;i++){
+      if(timeMap.has(p))return timeMap.get(p);
+      p=p.parentElement;if(!p)break;
+    }
+    return '';
+  };
+
+  document.querySelectorAll('[dir="auto"]').forEach(el=>{
+    const t=el.innerText.trim();
+    if(!t||seen.has(t)||isSkip(t))return;
+    if(el.closest('nav,header,[role="banner"],[role="navigation"]'))return;
+    if(t.length<5&&!/[\\p{L}]{3}/u.test(t))return;
+    seen.add(t);
+    const ts=findTime(el);
+    posts.push({id:'bm-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),username:username,text:t,timestamp:ts,url:'https://www.threads.net/@'+username,media:[]});
+  });
+
+  if(posts.length===0){
+    S('<span style="color:#ff6b6b">投稿を検出できませんでした。</span><br><small>ページを再読み込みして再試行してください。</small>');
+    await W(5000);document.getElementById('_tsSaver')?.remove();return;
+  }
+
+  const data='THREADS_EXPORT:'+JSON.stringify(posts);
+  try{
+    await navigator.clipboard.writeText(data);
+    S('<span style="color:#4ecdc4;font-size:18px">'+posts.length+'件の投稿を取得しました</span><br><small style="color:#aaa">クリップボードにコピー済み \\u2014 保存ツールに戻って「クリップボードからインポート」をクリック</small>');
+  }catch(e){
+    const ta=document.createElement('textarea');ta.value=data;ta.style.cssText='width:90%;height:80px;margin:10px auto;display:block;background:#111;color:#fff;border:1px solid #444;border-radius:8px;padding:10px;font-size:12px;';
+    document.getElementById('_tsSaver').innerHTML='<span style="color:#4ecdc4;font-size:18px">'+posts.length+'件の投稿を取得</span><br><small style="color:#aaa">クリップボードへのコピーに失敗しました。下のテキストを全選択してコピーしてください。</small>';
+    document.getElementById('_tsSaver').appendChild(ta);ta.select();
+  }
+
+  setTimeout(()=>document.getElementById('_tsSaver')?.remove(),30000);
+})();`;
+
+// Set bookmarklet href
+document.getElementById("bookmarkletLink").href =
+  "javascript:" + encodeURIComponent("(function(){" + BOOKMARKLET_SRC.replace(/\n\s*/g, "") + "})()");
+
+// ============================
+// State
+// ============================
 let fetchedPostsList = [];
 let currentUsername = "";
 
-// ===== CORS Proxies =====
+// ============================
+// Storage
+// ============================
+function getSavedPosts() {
+  try { return JSON.parse(localStorage.getItem("threads_saved_posts") || "[]"); }
+  catch { return []; }
+}
+function setSavedPosts(posts) {
+  localStorage.setItem("threads_saved_posts", JSON.stringify(posts));
+}
+
+// ============================
+// Import from Bookmarklet
+// ============================
+async function importFromClipboard() {
+  try {
+    const text = await navigator.clipboard.readText();
+    processImportData(text);
+  } catch (e) {
+    showToast("クリップボードの読み取りに失敗しました。「手動で貼り付け」を使ってください");
+  }
+}
+
+function togglePasteArea() {
+  const area = document.getElementById("pasteArea");
+  const submit = document.getElementById("pasteSubmit");
+  const show = area.style.display === "none";
+  area.style.display = show ? "block" : "none";
+  submit.style.display = show ? "block" : "none";
+  if (show) area.focus();
+}
+
+function importFromPaste() {
+  const text = document.getElementById("pasteArea").value.trim();
+  if (!text) { showToast("データを貼り付けてください"); return; }
+  processImportData(text);
+  document.getElementById("pasteArea").value = "";
+}
+
+function processImportData(raw) {
+  const prefix = "THREADS_EXPORT:";
+  let jsonStr = raw;
+  if (raw.startsWith(prefix)) {
+    jsonStr = raw.slice(prefix.length);
+  }
+
+  let posts;
+  try {
+    posts = JSON.parse(jsonStr);
+  } catch (e) {
+    showToast("データの形式が正しくありません");
+    return;
+  }
+
+  if (!Array.isArray(posts) || posts.length === 0) {
+    showToast("投稿データが見つかりません");
+    return;
+  }
+
+  // Validate and normalize posts
+  posts = posts.filter(p => p && p.text && typeof p.text === "string").map(p => ({
+    id: p.id || `import-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    username: p.username || "unknown",
+    text: p.text,
+    timestamp: p.timestamp || "",
+    url: p.url || "",
+    media: p.media || [],
+  }));
+
+  fetchedPostsList = posts;
+  currentUsername = posts[0]?.username || "";
+  renderFetchedPosts();
+  document.getElementById("fetchedCount").textContent = posts.length;
+  document.getElementById("fetchedActions").style.display = "flex";
+  switchTab("fetched");
+  showToast(`${posts.length}件の投稿をインポートしました`);
+}
+
+// ============================
+// CORS Proxy Fetch (fallback)
+// ============================
 const PROXIES = [
   url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
   url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
   url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
 ];
 
-// ===== Storage =====
-function getSavedPosts() {
-  try {
-    return JSON.parse(localStorage.getItem("threads_saved_posts") || "[]");
-  } catch { return []; }
-}
-
-function setSavedPosts(posts) {
-  localStorage.setItem("threads_saved_posts", JSON.stringify(posts));
-}
-
-// ===== URL Parsing =====
 function parseThreadsUrl(url) {
   url = url.trim();
-  // Handle @username input directly
-  if (/^@?[\w.]+$/.test(url)) {
-    const username = url.replace(/^@/, "");
-    return { type: "profile", username };
-  }
-  // Profile URL: https://www.threads.net/@username
+  if (/^@?[\w.]+$/.test(url)) return { type: "profile", username: url.replace(/^@/, "") };
   const profileMatch = url.match(/threads\.net\/@([\w.]+)\/?$/);
-  if (profileMatch) {
-    return { type: "profile", username: profileMatch[1] };
-  }
-  // Post URL: https://www.threads.net/@username/post/XXXX
+  if (profileMatch) return { type: "profile", username: profileMatch[1] };
   const postMatch = url.match(/threads\.net\/@([\w.]+)\/post\/([\w-]+)/);
-  if (postMatch) {
-    return { type: "post", username: postMatch[1], postId: postMatch[2] };
-  }
+  if (postMatch) return { type: "post", username: postMatch[1], postId: postMatch[2] };
   return null;
 }
 
-// ===== Fetch via Proxy =====
 async function fetchViaProxy(url) {
   for (let i = 0; i < PROXIES.length; i++) {
     try {
-      const proxyUrl = PROXIES[i](url);
-      const res = await fetch(proxyUrl, {
-        headers: { "Accept": "text/html,application/xhtml+xml,*/*" }
-      });
-      if (res.ok) {
-        return await res.text();
-      }
-    } catch (e) {
-      console.warn(`Proxy ${i} failed:`, e.message);
-    }
+      const res = await fetch(PROXIES[i](url), { headers: { "Accept": "text/html,*/*" } });
+      if (res.ok) return await res.text();
+    } catch (e) { console.warn(`Proxy ${i} failed:`, e.message); }
   }
   throw new Error("全てのプロキシで取得に失敗しました");
 }
 
-// ===== HTML Parsing =====
 function extractPostsFromHTML(html, username) {
   const posts = [];
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
+  const doc = new DOMParser().parseFromString(html, "text/html");
 
-  // Method 1: Look for JSON-LD structured data
-  const jsonLdScripts = doc.querySelectorAll('script[type="application/ld+json"]');
-  jsonLdScripts.forEach(script => {
+  // JSON-LD
+  doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
     try {
-      const data = JSON.parse(script.textContent);
-      if (data["@type"] === "SocialMediaPosting" || data["@type"] === "Article") {
+      const d = JSON.parse(s.textContent);
+      if (d["@type"] === "SocialMediaPosting" || d["@type"] === "Article") {
         posts.push({
-          id: data.url || `manual-${Date.now()}-${Math.random()}`,
-          username: username,
-          text: data.articleBody || data.description || data.text || "",
-          timestamp: data.datePublished || data.dateCreated || "",
-          url: data.url || "",
-          media: data.image ? (Array.isArray(data.image) ? data.image : [data.image]) : [],
+          id: d.url || `ld-${Date.now()}-${Math.random()}`, username,
+          text: d.articleBody || d.description || d.text || "",
+          timestamp: d.datePublished || d.dateCreated || "", url: d.url || "",
+          media: d.image ? [].concat(d.image) : [],
         });
       }
     } catch {}
   });
 
-  // Method 2: Look for embedded script data (__NEXT_DATA__, relay data, etc.)
-  const allScripts = doc.querySelectorAll("script");
-  allScripts.forEach(script => {
-    const text = script.textContent || "";
-
-    // Try __NEXT_DATA__
-    if (script.id === "__NEXT_DATA__" || text.includes('"props"') && text.includes('"pageProps"')) {
-      try {
-        const data = JSON.parse(text);
-        extractFromNextData(data, username, posts);
-      } catch {}
+  // Embedded script data
+  doc.querySelectorAll("script").forEach(s => {
+    const t = s.textContent || "";
+    if (s.id === "__NEXT_DATA__") {
+      try { traverseForPosts(JSON.parse(t), username, posts); } catch {}
     }
-
-    // Try to find JSON objects with thread/post data
-    if (text.includes('"text"') && (text.includes('"threads"') || text.includes('"items"'))) {
-      try {
-        // Try to extract JSON objects from script content
-        const jsonMatches = text.match(/\{[\s\S]*?"text"[\s\S]*?\}/g);
-        if (jsonMatches) {
-          jsonMatches.forEach(match => {
-            try {
-              const obj = JSON.parse(match);
-              if (obj.text && typeof obj.text === "string" && obj.text.length > 0) {
-                const existsAlready = posts.some(p => p.text === obj.text);
-                if (!existsAlready) {
-                  posts.push({
-                    id: obj.id || obj.pk || `parsed-${Date.now()}-${Math.random()}`,
-                    username: obj.username || username,
-                    text: obj.text,
-                    timestamp: obj.taken_at ? new Date(obj.taken_at * 1000).toISOString() : "",
-                    url: obj.url || `https://www.threads.net/@${username}`,
-                    media: [],
-                  });
-                }
-              }
-            } catch {}
-          });
-        }
-      } catch {}
-    }
-
-    // Try to find require-like data structures (Meta's BigPipe/Relay)
-    if (text.includes("thread_items") || text.includes("text_post_app_thread")) {
-      try {
-        extractFromRelayData(text, username, posts);
-      } catch {}
-    }
-  });
-
-  // Method 3: Parse meta tags for single post pages
-  if (posts.length === 0) {
-    const ogDesc = doc.querySelector('meta[property="og:description"]');
-    const ogTitle = doc.querySelector('meta[property="og:title"]');
-    const ogImage = doc.querySelector('meta[property="og:image"]');
-    const ogUrl = doc.querySelector('meta[property="og:url"]');
-
-    if (ogDesc && ogDesc.content) {
-      // For profile pages, og:description might list recent posts
-      const descText = ogDesc.content;
-
-      // Check if this looks like a single post description
-      if (descText.length > 10) {
-        // Clean up "X likes, X replies" suffix
-        const cleanText = descText.replace(/\s*\d+[KMB]?\s*(likes?|replies|reposts?)[\s,]*/gi, "").trim();
-        if (cleanText) {
-          posts.push({
-            id: (ogUrl && ogUrl.content) || `meta-${Date.now()}`,
-            username: username,
-            text: cleanText,
-            timestamp: "",
-            url: (ogUrl && ogUrl.content) || `https://www.threads.net/@${username}`,
-            media: ogImage ? [ogImage.content] : [],
-          });
-        }
-      }
-    }
-  }
-
-  // Method 4: Look for visible post content in the HTML
-  if (posts.length === 0) {
-    // Try to find post text from rendered HTML elements
-    const possiblePostElements = doc.querySelectorAll(
-      '[class*="post"], [class*="thread"], [data-pressable-container], [dir="auto"]'
-    );
-    possiblePostElements.forEach(el => {
-      const text = el.textContent.trim();
-      if (text.length > 10 && text.length < 5000) {
-        const existsAlready = posts.some(p => p.text === text);
-        if (!existsAlready) {
-          posts.push({
-            id: `dom-${Date.now()}-${Math.random()}`,
-            username: username,
-            text: text,
-            timestamp: "",
-            url: `https://www.threads.net/@${username}`,
-            media: [],
-          });
-        }
-      }
-    });
-  }
-
-  return posts;
-}
-
-function extractFromNextData(data, username, posts) {
-  // Navigate through Next.js page props to find thread data
-  const traverse = (obj, depth = 0) => {
-    if (depth > 10 || !obj || typeof obj !== "object") return;
-    if (Array.isArray(obj)) {
-      obj.forEach(item => traverse(item, depth + 1));
-      return;
-    }
-    // Look for thread/post objects
-    if (obj.text && typeof obj.text === "string") {
-      const existsAlready = posts.some(p => p.text === obj.text);
-      if (!existsAlready && obj.text.length > 0) {
-        posts.push({
-          id: obj.id || obj.pk || `next-${Date.now()}-${Math.random()}`,
-          username: obj.user?.username || username,
-          text: obj.text,
-          timestamp: obj.taken_at ? new Date(obj.taken_at * 1000).toISOString() : (obj.timestamp || ""),
-          url: obj.url || `https://www.threads.net/@${username}`,
-          media: [],
-        });
-      }
-    }
-    Object.values(obj).forEach(val => traverse(val, depth + 1));
-  };
-  traverse(data);
-}
-
-function extractFromRelayData(scriptText, username, posts) {
-  // Try to find thread items in Meta's relay/BigPipe data
-  const threadItemsRegex = /"thread_items"\s*:\s*(\[[\s\S]*?\])/g;
-  let match;
-  while ((match = threadItemsRegex.exec(scriptText)) !== null) {
-    try {
-      const items = JSON.parse(match[1]);
-      items.forEach(item => {
-        const post = item.post || item;
-        const caption = post.caption || {};
-        const text = caption.text || post.text || "";
-        if (text) {
-          const existsAlready = posts.some(p => p.text === text);
-          if (!existsAlready) {
-            posts.push({
-              id: post.pk || post.id || `relay-${Date.now()}-${Math.random()}`,
-              username: post.user?.username || username,
-              text: text,
-              timestamp: post.taken_at ? new Date(post.taken_at * 1000).toISOString() : "",
-              url: post.url || `https://www.threads.net/@${username}`,
-              media: [],
-            });
-          }
-        }
-      });
-    } catch {}
-  }
-}
-
-// ===== Fetch Individual Post =====
-async function fetchSinglePost(url, username, postId) {
-  setStatus(`投稿を取得中: ${postId}...`, true);
-  const html = await fetchViaProxy(url);
-  const posts = extractPostsFromHTML(html, username);
-  return posts;
-}
-
-// ===== Fetch All Profile Posts =====
-async function fetchProfilePosts(username) {
-  const posts = [];
-  const profileUrl = `https://www.threads.net/@${username}`;
-
-  setStatus(`<span class="highlight">@${username}</span> のプロフィールページを取得中...`, true);
-
-  try {
-    const html = await fetchViaProxy(profileUrl);
-    const extracted = extractPostsFromHTML(html, username);
-    posts.push(...extracted);
-
-    if (posts.length > 0) {
-      setStatus(`<span class="highlight">${posts.length}件</span>の投稿を取得しました`, false);
-    } else {
-      // Try fetching individual sections/pages if available
-      setStatus(`プロフィールページからの直接取得を試みています...`, true);
-
-      // Attempt to get posts from alternative endpoints
-      const altUrls = [
-        `https://www.threads.net/@${username}/threads`,
-        `https://www.threads.net/@${username}/replies`,
-      ];
-
-      for (const altUrl of altUrls) {
+    if (t.includes("thread_items") || t.includes("text_post_app_thread")) {
+      const re = /"thread_items"\s*:\s*(\[[\s\S]*?\])/g;
+      let m;
+      while ((m = re.exec(t)) !== null) {
         try {
-          const altHtml = await fetchViaProxy(altUrl);
-          const altPosts = extractPostsFromHTML(altHtml, username);
-          altPosts.forEach(p => {
-            if (!posts.some(existing => existing.text === p.text)) {
-              posts.push(p);
+          JSON.parse(m[1]).forEach(item => {
+            const p = item.post || item;
+            const text = (p.caption || {}).text || p.text || "";
+            if (text && !posts.some(x => x.text === text)) {
+              posts.push({
+                id: p.pk || p.id || `relay-${Date.now()}-${Math.random()}`, username: p.user?.username || username,
+                text, timestamp: p.taken_at ? new Date(p.taken_at * 1000).toISOString() : "",
+                url: p.url || `https://www.threads.net/@${username}`, media: [],
+              });
             }
           });
         } catch {}
       }
+    }
+  });
 
-      if (posts.length > 0) {
-        setStatus(`<span class="highlight">${posts.length}件</span>の投稿を取得しました`, false);
-      } else {
-        setStatus(
-          `自動取得できませんでした。ThreadsはJavaScript動的読み込みのため、`
-          + `ブラウザ制限により取得が難しい場合があります。<br><br>`
-          + `<strong>代替方法:</strong><br>`
-          + `1. Threadsアプリで投稿を開き「リンクをコピー」<br>`
-          + `2. 個別の投稿URLをこのツールに入力<br>`
-          + `3.「手動で追加」から投稿をコピペ`,
-          false
-        );
+  // Meta tags fallback
+  if (posts.length === 0) {
+    const desc = doc.querySelector('meta[property="og:description"]');
+    const ogUrl = doc.querySelector('meta[property="og:url"]');
+    const ogImg = doc.querySelector('meta[property="og:image"]');
+    if (desc && desc.content && desc.content.length > 10) {
+      const clean = desc.content.replace(/\s*\d+[KMB]?\s*(likes?|replies|reposts?)[\s,]*/gi, "").trim();
+      if (clean) {
+        posts.push({
+          id: (ogUrl && ogUrl.content) || `meta-${Date.now()}`, username, text: clean,
+          timestamp: "", url: (ogUrl && ogUrl.content) || `https://www.threads.net/@${username}`,
+          media: ogImg ? [ogImg.content] : [],
+        });
       }
     }
-  } catch (e) {
-    setStatus(`取得エラー: ${e.message}`, false);
   }
-
   return posts;
 }
 
-// ===== Main Fetch =====
+function traverseForPosts(obj, username, posts, depth = 0) {
+  if (depth > 10 || !obj || typeof obj !== "object") return;
+  if (Array.isArray(obj)) { obj.forEach(i => traverseForPosts(i, username, posts, depth + 1)); return; }
+  if (obj.text && typeof obj.text === "string" && obj.text.length > 0) {
+    if (!posts.some(p => p.text === obj.text)) {
+      posts.push({
+        id: obj.id || obj.pk || `next-${Date.now()}-${Math.random()}`,
+        username: obj.user?.username || username, text: obj.text,
+        timestamp: obj.taken_at ? new Date(obj.taken_at * 1000).toISOString() : (obj.timestamp || ""),
+        url: obj.url || `https://www.threads.net/@${username}`, media: [],
+      });
+    }
+  }
+  Object.values(obj).forEach(v => traverseForPosts(v, username, posts, depth + 1));
+}
+
 async function startFetch() {
   const input = document.getElementById("urlInput").value.trim();
-  if (!input) {
-    showToast("URLまたはユーザー名を入力してください");
-    return;
-  }
-
+  if (!input) { showToast("URLまたはユーザー名を入力してください"); return; }
   const parsed = parseThreadsUrl(input);
-  if (!parsed) {
-    showToast("有効なThreads URLを入力してください");
-    return;
-  }
+  if (!parsed) { showToast("有効なThreads URLを入力してください"); return; }
 
   const btn = document.getElementById("fetchBtn");
-  btn.disabled = true;
-  btn.textContent = "取得中...";
+  btn.disabled = true; btn.textContent = "取得中...";
   currentUsername = parsed.username;
 
   try {
-    let posts;
-    if (parsed.type === "post") {
-      posts = await fetchSinglePost(
-        `https://www.threads.net/@${parsed.username}/post/${parsed.postId}`,
-        parsed.username,
-        parsed.postId
-      );
-    } else {
-      posts = await fetchProfilePosts(parsed.username);
+    let url = parsed.type === "post"
+      ? `https://www.threads.net/@${parsed.username}/post/${parsed.postId}`
+      : `https://www.threads.net/@${parsed.username}`;
+    setStatus(`<span class="hl">@${parsed.username}</span> を取得中...`, true);
+    const html = await fetchViaProxy(url);
+    const posts = extractPostsFromHTML(html, parsed.username);
+
+    if (posts.length === 0 && parsed.type === "profile") {
+      // Try alt URLs
+      for (const suffix of ["/threads", "/replies"]) {
+        try {
+          const altHtml = await fetchViaProxy(`https://www.threads.net/@${parsed.username}${suffix}`);
+          const altPosts = extractPostsFromHTML(altHtml, parsed.username);
+          altPosts.forEach(p => { if (!posts.some(x => x.text === p.text)) posts.push(p); });
+        } catch {}
+      }
     }
 
     fetchedPostsList = posts;
@@ -817,117 +700,97 @@ async function startFetch() {
 
     if (posts.length > 0) {
       document.getElementById("fetchedActions").style.display = "flex";
+      setStatus(`<span class="hl">${posts.length}件</span>の投稿を取得しました`, false);
       showToast(`${posts.length}件の投稿を取得しました`);
+    } else {
+      setStatus(
+        `プロキシ経由では取得できませんでした。<br>`
+        + `<span class="hl">「セットアップ」タブのブックマークレットを使うと確実に取得できます。</span>`,
+        false
+      );
     }
   } catch (e) {
-    setStatus(`エラー: ${e.message}`, false);
-    showToast("取得に失敗しました");
+    setStatus(`エラー: ${e.message}<br><span class="hl">ブックマークレットの利用を推奨します。</span>`, false);
   } finally {
-    btn.disabled = false;
-    btn.textContent = "取得";
+    btn.disabled = false; btn.textContent = "取得";
   }
 }
 
-// ===== UI Rendering =====
+// ============================
+// Rendering
+// ============================
 function renderFetchedPosts() {
-  const container = document.getElementById("fetchedPosts");
+  const c = document.getElementById("fetchedPosts");
   if (fetchedPostsList.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="icon">@</div>
-        <p>ThreadsのプロフィールURLを入力して<br>投稿を取得してください</p>
-      </div>`;
+    c.innerHTML = `<div class="empty-state"><div class="icon">@</div>
+      <p>「セットアップ」タブでブックマークレットを<br>設定すると確実に全投稿を取得できます</p></div>`;
     document.getElementById("fetchedActions").style.display = "none";
     return;
   }
-
-  container.innerHTML = fetchedPostsList.map((post, i) => `
+  c.innerHTML = fetchedPostsList.map((p, i) => `
     <div class="post-card">
       <div class="post-header">
-        <span class="post-user">@${escapeHtml(post.username)}</span>
-        <span class="post-time">${post.timestamp ? formatDate(post.timestamp) : ""}</span>
+        <span class="post-user">@${esc(p.username)}</span>
+        <span class="post-time">${p.timestamp ? fmtDate(p.timestamp) : ""}</span>
       </div>
-      <div class="post-text">${escapeHtml(post.text)}</div>
-      ${post.media && post.media.length > 0 ? `<div class="post-media">${post.media.length}件のメディア</div>` : ""}
-      ${post.url ? `<div class="post-url"><a href="${escapeHtml(post.url)}" target="_blank" rel="noopener">${escapeHtml(post.url)}</a></div>` : ""}
+      <div class="post-text">${esc(p.text)}</div>
+      ${p.media?.length ? `<div class="post-media">${p.media.length}件のメディア</div>` : ""}
+      ${p.url ? `<div class="post-url"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.url)}</a></div>` : ""}
       <div class="post-actions">
         <button class="post-btn" onclick="savePost(${i})">保存</button>
         <button class="post-btn" onclick="copyPostText(${i})">コピー</button>
       </div>
-    </div>
-  `).join("");
+    </div>`).join("");
 }
 
 function renderSavedPosts() {
-  const container = document.getElementById("savedPosts");
+  const c = document.getElementById("savedPosts");
   const saved = getSavedPosts();
   document.getElementById("savedCount").textContent = saved.length;
 
   if (saved.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="icon">---</div>
-        <p>保存済みの投稿はありません</p>
-      </div>`;
+    c.innerHTML = `<div class="empty-state"><div class="icon">---</div><p>保存済みの投稿はありません</p></div>`;
     document.getElementById("savedActions").style.display = "none";
     return;
   }
-
   document.getElementById("savedActions").style.display = "flex";
 
-  // Group by username
   const grouped = {};
-  saved.forEach(post => {
-    const user = post.username || "unknown";
-    if (!grouped[user]) grouped[user] = [];
-    grouped[user].push(post);
-  });
+  saved.forEach(p => { const u = p.username || "unknown"; (grouped[u] = grouped[u] || []).push(p); });
 
   let html = "";
-  for (const [username, userPosts] of Object.entries(grouped)) {
-    html += `<div class="account-group">`;
-    html += `<div class="account-header">
-      <span>@${escapeHtml(username)}</span>
-      <span class="account-count">${userPosts.length}件</span>
-    </div>`;
-    userPosts.forEach((post, i) => {
-      const globalIndex = saved.indexOf(post);
-      html += `
-        <div class="post-card">
-          <div class="post-header">
-            <span class="post-user">@${escapeHtml(post.username)}</span>
-            <span class="post-time">${post.timestamp ? formatDate(post.timestamp) : ""} ${post.savedAt ? "/ 保存: " + formatDate(post.savedAt) : ""}</span>
-          </div>
-          <div class="post-text">${escapeHtml(post.text)}</div>
-          ${post.url ? `<div class="post-url"><a href="${escapeHtml(post.url)}" target="_blank" rel="noopener">${escapeHtml(post.url)}</a></div>` : ""}
-          <div class="post-actions">
-            <button class="post-btn" onclick="copySavedPostText(${globalIndex})">コピー</button>
-            <button class="post-btn danger" onclick="deleteSavedPost(${globalIndex})">削除</button>
-          </div>
-        </div>`;
+  for (const [user, userPosts] of Object.entries(grouped)) {
+    html += `<div class="account-group"><div class="account-header">
+      <span>@${esc(user)}</span><span class="account-count">${userPosts.length}件</span></div>`;
+    userPosts.forEach(p => {
+      const gi = saved.indexOf(p);
+      html += `<div class="post-card">
+        <div class="post-header">
+          <span class="post-user">@${esc(p.username)}</span>
+          <span class="post-time">${p.timestamp ? fmtDate(p.timestamp) : ""} ${p.savedAt ? "/ 保存: " + fmtDate(p.savedAt) : ""}</span>
+        </div>
+        <div class="post-text">${esc(p.text)}</div>
+        ${p.url ? `<div class="post-url"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.url)}</a></div>` : ""}
+        <div class="post-actions">
+          <button class="post-btn" onclick="copySavedText(${gi})">コピー</button>
+          <button class="post-btn danger" onclick="deleteSaved(${gi})">削除</button>
+        </div></div>`;
     });
     html += `</div>`;
   }
-  container.innerHTML = html;
+  c.innerHTML = html;
 }
 
-// ===== Post Actions =====
-function savePost(index) {
-  const post = fetchedPostsList[index];
-  if (!post) return;
-
+// ============================
+// Post Actions
+// ============================
+function savePost(i) {
+  const p = fetchedPostsList[i]; if (!p) return;
   const saved = getSavedPosts();
-  // Check for duplicates
-  const isDuplicate = saved.some(p => p.text === post.text && p.username === post.username);
-  if (isDuplicate) {
-    showToast("この投稿は既に保存されています");
-    return;
+  if (saved.some(s => s.text === p.text && s.username === p.username)) {
+    showToast("この投稿は既に保存されています"); return;
   }
-
-  saved.push({
-    ...post,
-    savedAt: new Date().toISOString(),
-  });
+  saved.push({ ...p, savedAt: new Date().toISOString() });
   setSavedPosts(saved);
   document.getElementById("savedCount").textContent = saved.length;
   showToast("投稿を保存しました");
@@ -935,228 +798,156 @@ function savePost(index) {
 
 function saveAllFetched() {
   const saved = getSavedPosts();
-  let addedCount = 0;
-
-  fetchedPostsList.forEach(post => {
-    const isDuplicate = saved.some(p => p.text === post.text && p.username === post.username);
-    if (!isDuplicate) {
-      saved.push({ ...post, savedAt: new Date().toISOString() });
-      addedCount++;
+  let n = 0;
+  fetchedPostsList.forEach(p => {
+    if (!saved.some(s => s.text === p.text && s.username === p.username)) {
+      saved.push({ ...p, savedAt: new Date().toISOString() }); n++;
     }
   });
-
   setSavedPosts(saved);
   document.getElementById("savedCount").textContent = saved.length;
-  showToast(`${addedCount}件の投稿を保存しました`);
+  showToast(`${n}件の投稿を保存しました`);
 }
 
-function copyPostText(index) {
-  const post = fetchedPostsList[index];
-  if (!post) return;
-  navigator.clipboard.writeText(post.text).then(() => showToast("コピーしました"));
+function copyPostText(i) {
+  const p = fetchedPostsList[i]; if (!p) return;
+  navigator.clipboard.writeText(p.text).then(() => showToast("コピーしました"));
 }
-
-function copySavedPostText(index) {
-  const saved = getSavedPosts();
-  if (!saved[index]) return;
-  navigator.clipboard.writeText(saved[index].text).then(() => showToast("コピーしました"));
+function copySavedText(i) {
+  const s = getSavedPosts(); if (!s[i]) return;
+  navigator.clipboard.writeText(s[i].text).then(() => showToast("コピーしました"));
 }
-
-function deleteSavedPost(index) {
-  const saved = getSavedPosts();
-  saved.splice(index, 1);
-  setSavedPosts(saved);
-  renderSavedPosts();
+function deleteSaved(i) {
+  const s = getSavedPosts(); s.splice(i, 1); setSavedPosts(s); renderSavedPosts();
   showToast("投稿を削除しました");
 }
-
 function clearAllSaved() {
   if (!confirm("全ての保存済み投稿を削除しますか？")) return;
-  setSavedPosts([]);
-  renderSavedPosts();
-  showToast("全投稿を削除しました");
+  setSavedPosts([]); renderSavedPosts(); showToast("全投稿を削除しました");
 }
-
 function copyAllSaved() {
-  const saved = getSavedPosts();
-  if (saved.length === 0) {
-    showToast("保存済み投稿がありません");
-    return;
-  }
-  const text = saved.map(p =>
-    `@${p.username}\n${p.text}\n${p.url || ""}\n${p.timestamp ? formatDate(p.timestamp) : ""}`
-  ).join("\n---\n\n");
-  navigator.clipboard.writeText(text).then(() => showToast("全投稿をコピーしました"));
+  const s = getSavedPosts();
+  if (!s.length) { showToast("保存済み投稿がありません"); return; }
+  const t = s.map(p => `@${p.username}\n${p.text}\n${p.url || ""}\n${p.timestamp ? fmtDate(p.timestamp) : ""}`).join("\n---\n\n");
+  navigator.clipboard.writeText(t).then(() => showToast("全投稿をコピーしました"));
 }
 
-// ===== Export =====
+// ============================
+// Export
+// ============================
 function exportJSON() {
-  const saved = getSavedPosts();
-  if (saved.length === 0) {
-    showToast("保存済み投稿がありません");
-    return;
-  }
-  const json = JSON.stringify(saved, null, 2);
-  downloadFile(json, `threads_posts_${formatDateForFile(new Date())}.json`, "application/json");
+  const s = getSavedPosts();
+  if (!s.length) { showToast("保存済み投稿がありません"); return; }
+  dl(JSON.stringify(s, null, 2), `threads_posts_${fileDateStr()}.json`, "application/json");
   showToast("JSONをエクスポートしました");
 }
-
 function exportText() {
-  const saved = getSavedPosts();
-  if (saved.length === 0) {
-    showToast("保存済み投稿がありません");
-    return;
-  }
-  let text = `Threads投稿保存データ\n出力日時: ${new Date().toLocaleString("ja-JP")}\n${"=".repeat(50)}\n\n`;
-
-  // Group by username
+  const s = getSavedPosts();
+  if (!s.length) { showToast("保存済み投稿がありません"); return; }
   const grouped = {};
-  saved.forEach(post => {
-    const user = post.username || "unknown";
-    if (!grouped[user]) grouped[user] = [];
-    grouped[user].push(post);
-  });
-
-  for (const [username, posts] of Object.entries(grouped)) {
-    text += `\n${"─".repeat(40)}\n@${username} (${posts.length}件)\n${"─".repeat(40)}\n\n`;
-    posts.forEach((post, i) => {
-      text += `[${i + 1}] ${post.timestamp ? formatDate(post.timestamp) : "日時不明"}\n`;
-      text += `${post.text}\n`;
-      if (post.url) text += `URL: ${post.url}\n`;
-      text += `\n`;
+  s.forEach(p => { const u = p.username || "unknown"; (grouped[u] = grouped[u] || []).push(p); });
+  let t = `Threads投稿保存データ\n出力日時: ${new Date().toLocaleString("ja-JP")}\n${"=".repeat(50)}\n`;
+  for (const [u, posts] of Object.entries(grouped)) {
+    t += `\n${"─".repeat(40)}\n@${u} (${posts.length}件)\n${"─".repeat(40)}\n\n`;
+    posts.forEach((p, i) => {
+      t += `[${i + 1}] ${p.timestamp ? fmtDate(p.timestamp) : "日時不明"}\n${p.text}\n`;
+      if (p.url) t += `URL: ${p.url}\n`;
+      t += `\n`;
     });
   }
-
-  downloadFile(text, `threads_posts_${formatDateForFile(new Date())}.txt`, "text/plain");
+  dl(t, `threads_posts_${fileDateStr()}.txt`, "text/plain");
   showToast("テキストをエクスポートしました");
 }
-
-function downloadFile(content, filename, mimeType) {
-  const blob = new Blob([content], { type: mimeType + ";charset=utf-8" });
-  const url = URL.createObjectURL(blob);
+function dl(content, name, mime) {
   const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  a.href = URL.createObjectURL(new Blob([content], { type: mime + ";charset=utf-8" }));
+  a.download = name; document.body.appendChild(a); a.click(); document.body.removeChild(a);
 }
 
-// ===== Manual Add =====
-function addManualPost() {
-  const section = document.getElementById("manualSection");
-  section.classList.toggle("show");
-  if (section.classList.contains("show")) {
+// ============================
+// Manual Add
+// ============================
+function toggleManualAdd() {
+  const s = document.getElementById("manualSection");
+  s.classList.toggle("show");
+  if (s.classList.contains("show")) {
     document.getElementById("manualUser").value = currentUsername ? `@${currentUsername}` : "";
     document.getElementById("manualText").focus();
   }
 }
-
-function closeManualAdd() {
-  document.getElementById("manualSection").classList.remove("show");
-}
-
+function closeManualAdd() { document.getElementById("manualSection").classList.remove("show"); }
 function submitManualPost() {
-  let username = document.getElementById("manualUser").value.trim().replace(/^@/, "");
-  const text = document.getElementById("manualText").value.trim();
-
-  if (!text) {
-    showToast("投稿の本文を入力してください");
-    return;
-  }
-  if (!username) username = "unknown";
-
-  const post = {
+  let u = document.getElementById("manualUser").value.trim().replace(/^@/, "");
+  const t = document.getElementById("manualText").value.trim();
+  if (!t) { showToast("投稿の本文を入力してください"); return; }
+  if (!u) u = "unknown";
+  fetchedPostsList.push({
     id: `manual-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-    username: username,
-    text: text,
-    timestamp: new Date().toISOString(),
-    url: "",
-    media: [],
-  };
-
-  // Add to fetched list
-  fetchedPostsList.push(post);
+    username: u, text: t, timestamp: new Date().toISOString(), url: "", media: [],
+  });
   renderFetchedPosts();
   document.getElementById("fetchedCount").textContent = fetchedPostsList.length;
   document.getElementById("fetchedActions").style.display = "flex";
-
-  // Clear form
   document.getElementById("manualText").value = "";
   document.getElementById("manualSection").classList.remove("show");
   showToast("投稿を追加しました");
 }
 
-// ===== Tabs =====
+// ============================
+// Tabs
+// ============================
 function switchTab(tab) {
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
   document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-
-  if (tab === "fetched") {
-    document.getElementById("tabFetched").classList.add("active");
-    document.getElementById("panelFetched").classList.add("active");
-  } else {
-    document.getElementById("tabSaved").classList.add("active");
-    document.getElementById("panelSaved").classList.add("active");
-    renderSavedPosts();
-  }
+  document.getElementById("tab" + {bookmarklet: "Bm", fetched: "Fetched", saved: "Saved"}[tab]).classList.add("active");
+  document.getElementById("panel" + {bookmarklet: "Bm", fetched: "Fetched", saved: "Saved"}[tab]).classList.add("active");
+  if (tab === "saved") renderSavedPosts();
 }
 
-// ===== Status =====
+// ============================
+// Status
+// ============================
 function setStatus(html, loading) {
   const bar = document.getElementById("statusBar");
-  const text = document.getElementById("statusText");
   const fill = document.getElementById("progressFill");
   bar.classList.add("show");
-  text.innerHTML = html;
-  if (loading) {
-    fill.classList.add("indeterminate");
-  } else {
-    fill.classList.remove("indeterminate");
-    fill.style.width = "100%";
-  }
+  document.getElementById("statusText").innerHTML = html;
+  fill.classList.toggle("loading", loading);
+  if (!loading) fill.style.width = "100%";
 }
 
-// ===== Utilities =====
-function escapeHtml(str) {
-  if (!str) return "";
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+// ============================
+// Utilities
+// ============================
+function esc(s) {
+  if (!s) return "";
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
-
-function formatDate(dateStr) {
-  try {
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return dateStr;
-    return d.toLocaleString("ja-JP", {
-      year: "numeric", month: "2-digit", day: "2-digit",
-      hour: "2-digit", minute: "2-digit"
-    });
-  } catch { return dateStr; }
+function fmtDate(s) {
+  try { const d = new Date(s); return isNaN(d) ? s : d.toLocaleString("ja-JP", {
+    year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit"
+  }); } catch { return s; }
+}
+function fileDateStr() {
+  const d = new Date();
+  return `${d.getFullYear()}${S(d.getMonth()+1)}${S(d.getDate())}_${S(d.getHours())}${S(d.getMinutes())}`;
+  function S(n) { return String(n).padStart(2, "0"); }
+}
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 2500);
 }
 
-function formatDateForFile(d) {
-  return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}_${String(d.getHours()).padStart(2,"0")}${String(d.getMinutes()).padStart(2,"0")}`;
-}
-
-function showToast(message) {
-  const toast = document.getElementById("toast");
-  toast.textContent = message;
-  toast.classList.add("show");
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => toast.classList.remove("show"), 2500);
-}
-
-// ===== Init =====
-document.getElementById("urlInput").addEventListener("keydown", e => {
-  if (e.key === "Enter") startFetch();
-});
-
-// Load saved count on init
+// ============================
+// Init
+// ============================
+document.getElementById("urlInput").addEventListener("keydown", e => { if (e.key === "Enter") startFetch(); });
 document.getElementById("savedCount").textContent = getSavedPosts().length;
+const savedBytes = new Blob([localStorage.getItem("threads_saved_posts") || "[]"]).size;
 document.getElementById("footer").textContent =
-  `Threads投稿自動保存ツール v1.0 — 保存先: localStorage (${(new Blob([localStorage.getItem("threads_saved_posts") || "[]"]).size / 1024).toFixed(1)}KB使用中)`;
+  `Threads投稿自動保存ツール v2.0 — localStorage: ${(savedBytes / 1024).toFixed(1)}KB使用中`;
 </script>
 </body>
 </html>
