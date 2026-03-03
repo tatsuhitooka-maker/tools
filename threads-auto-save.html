@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Threads投稿自動保存ツール</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    background: #0a0a0a;
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", system-ui, sans-serif;
+    color: #f5f5f5;
+    padding: 20px 16px 40px;
+  }
+  .container { max-width: 640px; margin: 0 auto; }
+
+  /* Header */
+  .header { text-align: center; padding: 32px 0 24px; }
+  .header-icon {
+    width: 52px; height: 52px; border-radius: 16px;
+    background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+    margin: 0 auto 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; color: #000; font-weight: 800;
+  }
+  h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: #fff; }
+  .subtitle { font-size: 13px; color: #666; margin-top: 6px; }
+
+  /* Stats Bar */
+  .stats-bar {
+    display: flex; gap: 8px; margin-bottom: 16px;
+  }
+  .stat-chip {
+    flex: 1; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px;
+    padding: 14px 16px; text-align: center;
+  }
+  .stat-num { font-size: 22px; font-weight: 800; color: #fff; }
+  .stat-label { font-size: 11px; color: #666; margin-top: 4px; letter-spacing: 0.04em; }
+
+  /* Cards */
+  .card {
+    background: #1a1a1a; border-radius: 16px; padding: 20px;
+    margin-bottom: 12px; border: 1px solid #2a2a2a;
+  }
+  .input-label {
+    font-size: 11px; color: #666; margin-bottom: 8px;
+    letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;
+  }
+
+  /* Inputs */
+  .url-input-wrap { display: flex; gap: 10px; }
+  .url-input, .search-input {
+    flex: 1; background: #111; border: 1px solid #2a2a2a; border-radius: 10px;
+    padding: 12px 14px; font-size: 14px; color: #fff; outline: none;
+    transition: border-color 0.2s; font-family: inherit;
+  }
+  .url-input:focus, .search-input:focus { border-color: #444; }
+  .url-input::placeholder, .search-input::placeholder { color: #444; }
+  .search-wrap {
+    position: relative; margin-bottom: 12px;
+  }
+  .search-wrap::before {
+    content: ""; position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    width: 14px; height: 14px; border: 2px solid #444; border-radius: 50%;
+    pointer-events: none;
+  }
+  .search-wrap::after {
+    content: ""; position: absolute; left: 26px; top: 60%;
+    width: 2px; height: 6px; background: #444; transform: rotate(-45deg);
+    pointer-events: none;
+  }
+  .search-input { padding-left: 38px; }
+
+  .btn-primary {
+    background: #fff; color: #000; border: none; border-radius: 10px;
+    padding: 12px 22px; font-size: 14px; font-weight: 700; cursor: pointer;
+    transition: all 0.2s; white-space: nowrap; font-family: inherit;
+  }
+  .btn-primary:hover { background: #e0e0e0; }
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-primary:disabled { background: #333; color: #555; cursor: not-allowed; }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 3px; margin-bottom: 16px; background: #111;
+    border-radius: 12px; padding: 3px; border: 1px solid #222;
+  }
+  .tab {
+    flex: 1; background: none; border: none; padding: 11px 6px; font-size: 12px;
+    font-weight: 600; color: #555; cursor: pointer; border-radius: 9px;
+    transition: all 0.2s; font-family: inherit;
+  }
+  .tab.active { background: #2a2a2a; color: #fff; }
+  .tab .badge {
+    display: inline-block; background: #222; color: #666; font-size: 10px;
+    padding: 1px 5px; border-radius: 8px; margin-left: 3px; font-weight: 700;
+  }
+  .tab.active .badge { background: #444; color: #ccc; }
+
+  /* Status */
+  .status-bar {
+    background: #1a1a1a; border-radius: 12px; padding: 14px 18px;
+    margin-bottom: 12px; border: 1px solid #2a2a2a; display: none;
+  }
+  .status-bar.show { display: block; }
+  .status-text { font-size: 13px; color: #888; line-height: 1.6; }
+  .status-text .hl { color: #fff; font-weight: 600; }
+  .progress-bar {
+    height: 2px; background: #222; border-radius: 2px; margin-top: 10px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: #fff; border-radius: 2px; transition: width 0.3s; width: 0%;
+  }
+  .progress-fill.loading { width: 30%; animation: loading 1.5s infinite ease-in-out; }
+  @keyframes loading {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+  }
+
+  /* Panels */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Import Banner */
+  .import-banner {
+    background: linear-gradient(135deg, #1a2a1a 0%, #1a1a1a 100%);
+    border: 1px solid #2a4a2a; border-radius: 14px; padding: 18px 20px;
+    margin-bottom: 12px; display: none; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .import-banner:hover { border-color: #3a6a3a; background: linear-gradient(135deg, #1f301f 0%, #1a1a1a 100%); }
+  .import-banner.show { display: block; animation: fadeSlide 0.3s ease; }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .import-banner-title { font-size: 14px; font-weight: 700; color: #6d6; margin-bottom: 4px; }
+  .import-banner-desc { font-size: 12px; color: #888; }
+  .import-banner-close {
+    float: right; background: none; border: none; color: #555; font-size: 18px;
+    cursor: pointer; line-height: 1; padding: 0 0 0 10px;
+  }
+
+  /* Post Card */
+  .post-card {
+    background: #151515; border-radius: 14px; padding: 16px 18px;
+    margin-bottom: 8px; border: 1px solid #222; transition: border-color 0.2s;
+  }
+  .post-card:hover { border-color: #333; }
+  .post-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+  }
+  .post-user { font-size: 13px; font-weight: 700; color: #fff; }
+  .post-time { font-size: 10px; color: #555; }
+  .post-text {
+    font-size: 14px; line-height: 1.8; color: #ccc; white-space: pre-wrap; word-break: break-word;
+  }
+  .post-meta {
+    display: flex; gap: 12px; margin-top: 8px; font-size: 11px; color: #555;
+  }
+  .post-meta span { display: flex; align-items: center; gap: 3px; }
+  .post-media-badge {
+    display: inline-block; margin-top: 8px; font-size: 11px; color: #555;
+    padding: 4px 10px; background: #111; border-radius: 6px; border: 1px solid #222;
+  }
+  .post-actions {
+    display: flex; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #1e1e1e;
+  }
+  .post-btn {
+    background: #1e1e1e; border: none; color: #777; font-size: 11px;
+    padding: 5px 10px; border-radius: 6px; cursor: pointer;
+    transition: all 0.15s; font-family: inherit;
+  }
+  .post-btn:hover { background: #2a2a2a; color: #fff; }
+  .post-btn.danger:hover { background: #2a1515; color: #e74c3c; }
+  .post-url { font-size: 10px; color: #444; margin-top: 6px; word-break: break-all; }
+  .post-url a { color: #444; text-decoration: none; }
+  .post-url a:hover { color: #777; text-decoration: underline; }
+
+  /* Empty */
+  .empty-state { text-align: center; padding: 44px 20px; color: #444; font-size: 13px; line-height: 1.8; }
+  .empty-state .icon { font-size: 28px; margin-bottom: 10px; opacity: 0.5; }
+
+  /* Action Bar */
+  .action-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .action-btn {
+    background: #151515; border: 1px solid #222; color: #888; font-size: 12px;
+    font-weight: 600; padding: 8px 14px; border-radius: 8px; cursor: pointer;
+    transition: all 0.2s; font-family: inherit;
+  }
+  .action-btn:hover { background: #1e1e1e; color: #fff; border-color: #333; }
+  .action-btn.danger:hover { background: #2a1515; color: #e74c3c; border-color: #4a2020; }
+  .action-btn.accent { border-color: #2a3a5a; color: #7ab; }
+  .action-btn.accent:hover { background: #151520; border-color: #3a5a8a; }
+  .action-btn.green { border-color: #2a4a2a; color: #8b8; }
+  .action-btn.green:hover { background: #151f15; border-color: #3a6a3a; }
+
+  /* Sort Bar */
+  .sort-bar {
+    display: flex; gap: 6px; align-items: center; margin-bottom: 12px;
+    font-size: 11px; color: #555;
+  }
+  .sort-btn {
+    background: none; border: 1px solid #222; color: #555; font-size: 11px;
+    padding: 4px 10px; border-radius: 6px; cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+  }
+  .sort-btn:hover { border-color: #444; color: #aaa; }
+  .sort-btn.active { border-color: #555; color: #fff; background: #222; }
+
+  /* Manual Section */
+  .manual-section {
+    background: #1a1a1a; border-radius: 16px; padding: 20px; margin-bottom: 12px;
+    border: 1px solid #2a2a2a; display: none;
+  }
+  .manual-section.show { display: block; }
+  .manual-textarea {
+    width: 100%; min-height: 90px; background: #111; border: 1px solid #2a2a2a;
+    border-radius: 10px; padding: 12px 14px; font-size: 14px; color: #fff;
+    outline: none; resize: vertical; line-height: 1.7; font-family: inherit;
+  }
+  .manual-textarea::placeholder { color: #444; }
+  .manual-actions { display: flex; gap: 8px; margin-top: 10px; }
+
+  /* Bookmarklet Section */
+  .bm-section { padding: 0; overflow: hidden; }
+  .bm-step { padding: 18px 20px; border-bottom: 1px solid #1e1e1e; }
+  .bm-step:last-child { border-bottom: none; }
+  .bm-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; background: #2a2a2a; border-radius: 50%;
+    font-size: 11px; font-weight: 700; color: #fff; margin-right: 8px;
+  }
+  .bm-step-title { font-size: 14px; font-weight: 600; color: #ddd; margin-bottom: 8px; }
+  .bm-step-desc { font-size: 13px; color: #777; line-height: 1.7; margin-left: 30px; }
+  .bm-link {
+    display: inline-block;
+    background: linear-gradient(135deg, #2a4a8a 0%, #1a3060 100%);
+    color: #8abfff; padding: 11px 22px; border-radius: 10px;
+    font-size: 14px; font-weight: 700; text-decoration: none;
+    cursor: grab; border: 1px solid #3a5a9a;
+    margin: 8px 0 4px 30px; transition: all 0.2s; user-select: none;
+  }
+  .bm-link:hover { background: linear-gradient(135deg, #3a5a9a 0%, #2a4070 100%); border-color: #4a6aaa; }
+  .bm-link:active { transform: scale(0.97); cursor: grabbing; }
+  .bm-note { font-size: 11px; color: #555; margin: 6px 0 0 30px; line-height: 1.5; }
+  .bm-import-area {
+    padding: 18px 20px; background: #111; border-top: 1px solid #222;
+  }
+  .bm-import-area .manual-textarea { min-height: 70px; margin-top: 8px; }
+
+  /* Account Group */
+  .account-group { margin-bottom: 16px; }
+  .account-header {
+    font-size: 13px; font-weight: 700; color: #eee; padding: 6px 0;
+    margin-bottom: 6px; border-bottom: 1px solid #1e1e1e;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .account-count { font-size: 11px; color: #555; font-weight: 400; }
+
+  /* Footer */
+  .footer { text-align: center; font-size: 10px; color: #333; margin-top: 20px; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #fff; color: #000; padding: 10px 22px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; opacity: 0; transition: all 0.3s ease;
+    z-index: 100; font-family: inherit; max-width: 90vw; text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    body { padding: 12px 12px 32px; }
+    .url-input-wrap { flex-direction: column; }
+    .btn-primary { text-align: center; }
+    h1 { font-size: 20px; }
+    .bm-link { margin-left: 0; margin-top: 10px; display: block; text-align: center; }
+    .bm-note, .bm-step-desc { margin-left: 0; margin-top: 6px; }
+    .stat-chip { padding: 10px 8px; }
+    .stat-num { font-size: 18px; }
+    .stats-bar { gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="header-icon">@</div>
+    <h1>Threads投稿自動保存</h1>
+    <p class="subtitle">ブックマークレットで全投稿を確実に取得</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-chip">
+      <div class="stat-num" id="statTotal">0</div>
+      <div class="stat-label">保存済み</div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-num" id="statAccounts">0</div>
+      <div class="stat-label">アカウント</div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-num" id="statSize">0</div>
+      <div class="stat-label">KB</div>
+    </div>
+  </div>
+
+  <!-- Import Banner (auto-detect) -->
+  <div class="import-banner" id="importBanner" onclick="importFromClipboard()">
+    <button class="import-banner-close" onclick="event.stopPropagation();hideImportBanner();">x</button>
+    <div class="import-banner-title">Threads取得データを検出しました</div>
+    <div class="import-banner-desc">クリックしてインポート</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab" onclick="switchTab('bookmarklet')" id="tabBm">セットアップ</button>
+    <button class="tab active" onclick="switchTab('fetched')" id="tabFetched">
+      取得<span class="badge" id="fetchedCount">0</span>
+    </button>
+    <button class="tab" onclick="switchTab('saved')" id="tabSaved">
+      保存済み<span class="badge" id="savedCount">0</span>
+    </button>
+  </div>
+
+  <!-- ===== Bookmarklet Panel ===== -->
+  <div class="panel" id="panelBm">
+    <div class="card bm-section">
+      <div class="bm-step">
+        <p class="bm-step-title"><span class="bm-num">1</span>ブックマークレットを登録</p>
+        <p class="bm-step-desc">下のボタンをブックマークバーにドラッグ&ドロップ<br>(スマホ: 長押し→URLコピー→新規ブックマークに貼付)</p>
+        <a class="bm-link" id="bookmarkletLink" href="#">Threads取得</a>
+        <p class="bm-note">ブックマークバー非表示の場合: Ctrl+Shift+B (Mac: Cmd+Shift+B)</p>
+      </div>
+      <div class="bm-step">
+        <p class="bm-step-title"><span class="bm-num">2</span>Threadsで実行</p>
+        <p class="bm-step-desc">
+          ログイン済みの状態で対象のプロフィールページを開き、<br>
+          ブックマークレットをクリック。<br>
+          自動スクロール → 全投稿を抽出 → クリップボードにコピー。
+        </p>
+      </div>
+      <div class="bm-step">
+        <p class="bm-step-title"><span class="bm-num">3</span>このページに戻る</p>
+        <p class="bm-step-desc">
+          戻ると自動でデータを検出してバナーが表示されます。<br>
+          クリックするだけでインポート完了。
+        </p>
+      </div>
+      <div class="bm-import-area">
+        <p class="input-label">手動インポート</p>
+        <div class="action-bar" style="margin-bottom:0;">
+          <button class="action-btn accent" onclick="importFromClipboard()">クリップボードから読込</button>
+          <button class="action-btn" onclick="togglePasteArea()">テキスト貼り付け</button>
+        </div>
+        <textarea class="manual-textarea" id="pasteArea" placeholder="ブックマークレットの出力をここに貼り付け..." style="display:none;"></textarea>
+        <div style="display:none;margin-top:8px;" id="pasteSubmit">
+          <button class="btn-primary" onclick="importFromPaste()" style="width:100%;">インポート</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Fetched Panel ===== -->
+  <div class="panel active" id="panelFetched">
+    <div class="card">
+      <p class="input-label">URL直接取得（プロキシ経由）</p>
+      <div class="url-input-wrap">
+        <input type="text" class="url-input" id="urlInput" placeholder="https://www.threads.net/@username or @username">
+        <button class="btn-primary" id="fetchBtn" onclick="startFetch()">取得</button>
+      </div>
+    </div>
+
+    <div class="status-bar" id="statusBar">
+      <p class="status-text" id="statusText"></p>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div class="action-bar" id="fetchedActions" style="display:none;">
+      <button class="action-btn green" onclick="saveAllFetched()">全て保存</button>
+      <button class="action-btn" onclick="toggleManualAdd()">手動で追加</button>
+    </div>
+
+    <div id="fetchedPosts">
+      <div class="empty-state">
+        <div class="icon">@</div>
+        <p>「セットアップ」タブのブックマークレットで<br>確実に全投稿を取得できます<br><br>
+        またはURLを入力して直接取得も可能</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Saved Panel ===== -->
+  <div class="panel" id="panelSaved">
+    <div class="action-bar" id="savedActions" style="display:none;">
+      <button class="action-btn" onclick="exportJSON()">JSON</button>
+      <button class="action-btn" onclick="exportText()">TXT</button>
+      <button class="action-btn" onclick="copyAllSaved()">全コピー</button>
+      <button class="action-btn danger" onclick="clearAllSaved()">全削除</button>
+    </div>
+
+    <div class="search-wrap" id="searchWrap" style="display:none;">
+      <input type="text" class="search-input" id="searchInput" placeholder="投稿を検索..." oninput="onSearch()">
+    </div>
+
+    <div class="sort-bar" id="sortBar" style="display:none;">
+      <span>並替:</span>
+      <button class="sort-btn active" onclick="setSort('newest')" id="sortNewest">新しい順</button>
+      <button class="sort-btn" onclick="setSort('oldest')" id="sortOldest">古い順</button>
+      <button class="sort-btn" onclick="setSort('account')" id="sortAccount">アカウント別</button>
+    </div>
+
+    <div id="savedPosts">
+      <div class="empty-state">
+        <div class="icon">---</div>
+        <p>保存済みの投稿はありません</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manual Add -->
+  <div class="manual-section" id="manualSection">
+    <p class="input-label">投稿を手動で追加</p>
+    <input type="text" class="url-input" id="manualUser" placeholder="@username" style="margin-bottom:8px;">
+    <textarea class="manual-textarea" id="manualText" placeholder="投稿の本文を入力..."></textarea>
+    <div class="manual-actions">
+      <button class="btn-primary" onclick="submitManualPost()" style="flex:1;">追加</button>
+      <button class="action-btn" onclick="closeManualAdd()">閉じる</button>
+    </div>
+  </div>
+
+  <p class="footer" id="footer"></p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ========================================
+// BOOKMARKLET SOURCE
+// ========================================
+const BOOKMARKLET_SRC = `(async()=>{
+const S=m=>{let e=document.getElementById('_tsSaver');if(!e){e=document.createElement('div');e.id='_tsSaver';e.style.cssText='position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#000;color:#fff;padding:14px 20px;text-align:center;font-size:14px;font-family:system-ui,sans-serif;box-shadow:0 4px 24px rgba(0,0,0,0.6);transition:all 0.3s;';document.body.appendChild(e);}e.innerHTML=m;};
+const W=ms=>new Promise(r=>setTimeout(r,ms));
+if(!location.hostname.includes('threads.net')){alert('threads.net\\u3067\\u5b9f\\u884c\\u3057\\u3066\\u304f\\u3060\\u3055\\u3044');return;}
+const um=location.pathname.match(/@([\\w.]+)/);
+const username=um?um[1]:'unknown';
+S('\\u5168\\u6295\\u7a3f\\u3092\\u8aad\\u307f\\u8fbc\\u307f\\u4e2d... <br><small style=color:#888>\\u81ea\\u52d5\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u4e2d\\u3001\\u3057\\u3070\\u3089\\u304f\\u304a\\u5f85\\u3061\\u304f\\u3060\\u3055\\u3044</small>');
+let prevH=0,same=0,rounds=0;
+while(same<6&&rounds<300){window.scrollTo(0,document.body.scrollHeight);await W(1000);const h=document.body.scrollHeight;if(h===prevH)same++;else same=0;prevH=h;rounds++;if(rounds%8===0)S('\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u4e2d... ('+rounds+'\\u56de)');};
+window.scrollTo(0,0);await W(500);S('\\u6295\\u7a3f\\u3092\\u62bd\\u51fa\\u4e2d...');
+const posts=[],seen=new Set();
+const skip=new Set(['Threads','Home','Search','Activity','Profile','Log in','Sign up','Replies','Reposts','Followers','Following','Follow','Verified','Edit profile','Share profile','threads.net','See more','See less','Show replies','Hide replies','More','Post','Quote','Repost','Share','Copy link','Report','Block','Mute','Unfollow','Cancel',username,'@'+username]);
+const isUI=t=>{if(t.length<2||skip.has(t))return true;if(/^\\d+(\\.\\d+)?[KMB]?$/.test(t))return true;if(/^\\d+\\s*(likes?|replies|reposts?|followers?|following|posts?|hours?|minutes?|days?|weeks?|months?|years?|h|m|d|w|s)$/i.test(t))return true;if(/^(Just now|Yesterday|\\d+[hmdwys])$/i.test(t))return true;if(t.length<4&&!/[\\p{Script=Han}\\p{Script=Hiragana}\\p{Script=Katakana}]/u.test(t))return true;return false;};
+const tEls=document.querySelectorAll('time[datetime]');
+const tMap=new Map();
+tEls.forEach(te=>{let p=te;for(let i=0;i<20;i++){p=p.parentElement;if(!p)break;tMap.set(p,te.getAttribute('datetime'));}});
+const findTime=el=>{let p=el;for(let i=0;i<20;i++){if(tMap.has(p))return tMap.get(p);p=p.parentElement;if(!p)break;}return '';};
+const findPostUrl=el=>{let p=el;for(let i=0;i<15;i++){p=p.parentElement;if(!p)break;const links=p.querySelectorAll('a[href*="/post/"]');if(links.length){const href=links[0].getAttribute('href');if(href)return href.startsWith('http')?href:'https://www.threads.net'+href;}}return '';};
+const findMedia=el=>{let p=el,n=0;for(let i=0;i<10;i++){p=p.parentElement;if(!p)break;n+=p.querySelectorAll('img[src*="scontent"],img[src*="cdninstagram"],video').length;}return n;};
+const findEngagement=el=>{let p=el;for(let i=0;i<12;i++){p=p.parentElement;if(!p)break;const btns=p.querySelectorAll('[role="button"]');let likes=0,replies=0;btns.forEach(b=>{const t=b.textContent.trim();const m=t.match(/^(\\d+)/);if(m){const v=parseInt(m[1]);if(t.match(/like/i)||b.querySelector('[aria-label*="like"],[aria-label*="Like"]'))likes=v;else if(t.match(/repl/i))replies=v;}});if(likes||replies)return{likes,replies};}return{likes:0,replies:0};};
+document.querySelectorAll('[dir="auto"]').forEach(el=>{const t=(el.innerText||'').trim();if(!t||seen.has(t)||isUI(t))return;if(el.closest('nav,header,[role="banner"],[role="navigation"],[role="dialog"]'))return;seen.add(t);
+const ts=findTime(el);const pUrl=findPostUrl(el);const media=findMedia(el);const eng=findEngagement(el);
+posts.push({id:'bm-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),username:username,text:t,timestamp:ts,url:pUrl||'https://www.threads.net/@'+username,mediaCount:media,likes:eng.likes,replies:eng.replies});});
+if(!posts.length){S('<span style=color:#ff6b6b>\\u6295\\u7a3f\\u3092\\u691c\\u51fa\\u3067\\u304d\\u307e\\u305b\\u3093\\u3067\\u3057\\u305f</span>');await W(4000);document.getElementById('_tsSaver')?.remove();return;}
+const data='THREADS_EXPORT:'+JSON.stringify(posts);
+try{await navigator.clipboard.writeText(data);S('<span style=\\"color:#4ecdc4;font-size:18px\\">'+posts.length+'\\u4ef6\\u306e\\u6295\\u7a3f\\u3092\\u53d6\\u5f97</span><br><small style=color:#999>\\u30af\\u30ea\\u30c3\\u30d7\\u30dc\\u30fc\\u30c9\\u306b\\u30b3\\u30d4\\u30fc\\u6e08\\u307f\\u3002\\u4fdd\\u5b58\\u30c4\\u30fc\\u30eb\\u306b\\u623b\\u3063\\u3066\\u304f\\u3060\\u3055\\u3044\\u3002</small>');}
+catch(e){const ta=document.createElement('textarea');ta.value=data;ta.style.cssText='width:90%;height:60px;margin:8px auto;display:block;background:#111;color:#fff;border:1px solid #444;border-radius:8px;padding:8px;font-size:11px;';const c=document.getElementById('_tsSaver');c.innerHTML='<span style=\\"color:#4ecdc4;font-size:16px\\">'+posts.length+'\\u4ef6\\u53d6\\u5f97</span><br><small style=color:#999>\\u4e0b\\u306e\\u30c6\\u30ad\\u30b9\\u30c8\\u3092\\u5168\\u9078\\u629e\\u3057\\u3066\\u30b3\\u30d4\\u30fc\\u3057\\u3066\\u304f\\u3060\\u3055\\u3044</small>';c.appendChild(ta);ta.select();}
+setTimeout(()=>document.getElementById('_tsSaver')?.remove(),30000);})();`;
+
+document.getElementById("bookmarkletLink").href =
+  "javascript:" + encodeURIComponent(BOOKMARKLET_SRC);
+
+// ========================================
+// STATE
+// ========================================
+let fetchedPostsList = [];
+let currentUsername = "";
+let currentSort = "newest";
+let searchQuery = "";
+
+// ========================================
+// STORAGE
+// ========================================
+function getSaved() {
+  try { return JSON.parse(localStorage.getItem("threads_saved_posts") || "[]"); }
+  catch { return []; }
+}
+function setSaved(posts) {
+  localStorage.setItem("threads_saved_posts", JSON.stringify(posts));
+  updateStats();
+}
+function updateStats() {
+  const s = getSaved();
+  const accounts = new Set(s.map(p => p.username)).size;
+  const bytes = new Blob([localStorage.getItem("threads_saved_posts") || "[]"]).size;
+  document.getElementById("statTotal").textContent = s.length;
+  document.getElementById("statAccounts").textContent = accounts;
+  document.getElementById("statSize").textContent = (bytes / 1024).toFixed(1);
+  document.getElementById("savedCount").textContent = s.length;
+}
+
+// ========================================
+// AUTO-DETECT CLIPBOARD ON FOCUS
+// ========================================
+let bannerDismissed = false;
+
+async function checkClipboardForData() {
+  if (bannerDismissed) return;
+  try {
+    const text = await navigator.clipboard.readText();
+    if (text && text.startsWith("THREADS_EXPORT:")) {
+      document.getElementById("importBanner").classList.add("show");
+    }
+  } catch {}
+}
+
+function hideImportBanner() {
+  document.getElementById("importBanner").classList.remove("show");
+  bannerDismissed = true;
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) checkClipboardForData();
+});
+window.addEventListener("focus", () => checkClipboardForData());
+
+// ========================================
+// IMPORT
+// ========================================
+async function importFromClipboard() {
+  try {
+    const text = await navigator.clipboard.readText();
+    processImport(text);
+    hideImportBanner();
+  } catch {
+    showToast("クリップボード読取失敗。「テキスト貼り付け」をお使いください");
+  }
+}
+
+function togglePasteArea() {
+  const a = document.getElementById("pasteArea");
+  const s = document.getElementById("pasteSubmit");
+  const show = a.style.display === "none";
+  a.style.display = show ? "block" : "none";
+  s.style.display = show ? "block" : "none";
+  if (show) a.focus();
+}
+
+function importFromPaste() {
+  const t = document.getElementById("pasteArea").value.trim();
+  if (!t) { showToast("データを貼り付けてください"); return; }
+  processImport(t);
+  document.getElementById("pasteArea").value = "";
+}
+
+function processImport(raw) {
+  const prefix = "THREADS_EXPORT:";
+  let json = raw.startsWith(prefix) ? raw.slice(prefix.length) : raw;
+  let posts;
+  try { posts = JSON.parse(json); } catch { showToast("データ形式が不正です"); return; }
+  if (!Array.isArray(posts) || !posts.length) { showToast("投稿が見つかりません"); return; }
+
+  posts = posts.filter(p => p && p.text && typeof p.text === "string").map(p => ({
+    id: p.id || uid(), username: p.username || "unknown", text: p.text,
+    timestamp: p.timestamp || "", url: p.url || "",
+    mediaCount: p.mediaCount || 0, likes: p.likes || 0, replies: p.replies || 0,
+  }));
+
+  fetchedPostsList = posts;
+  currentUsername = posts[0]?.username || "";
+  renderFetched();
+  document.getElementById("fetchedCount").textContent = posts.length;
+  document.getElementById("fetchedActions").style.display = "flex";
+  switchTab("fetched");
+  showToast(`${posts.length}件をインポートしました`);
+}
+
+// ========================================
+// PROXY FETCH (fallback)
+// ========================================
+const PROXIES = [
+  u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+  u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+];
+
+function parseUrl(url) {
+  url = url.trim();
+  if (/^@?[\w.]+$/.test(url)) return { type: "profile", username: url.replace(/^@/, "") };
+  const pm = url.match(/threads\.net\/@([\w.]+)\/?$/);
+  if (pm) return { type: "profile", username: pm[1] };
+  const pp = url.match(/threads\.net\/@([\w.]+)\/post\/([\w-]+)/);
+  if (pp) return { type: "post", username: pp[1], postId: pp[2] };
+  return null;
+}
+
+async function fetchProxy(url) {
+  for (const p of PROXIES) {
+    try { const r = await fetch(p(url)); if (r.ok) return await r.text(); } catch {}
+  }
+  throw new Error("プロキシ取得失敗");
+}
+
+function parseHTML(html, username) {
+  const posts = [];
+  const doc = new DOMParser().parseFromString(html, "text/html");
+
+  doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
+    try {
+      const d = JSON.parse(s.textContent);
+      if (d["@type"] === "SocialMediaPosting" || d["@type"] === "Article") {
+        posts.push({ id: d.url || uid(), username, text: d.articleBody || d.description || d.text || "",
+          timestamp: d.datePublished || "", url: d.url || "", mediaCount: 0, likes: 0, replies: 0 });
+      }
+    } catch {}
+  });
+
+  doc.querySelectorAll("script").forEach(s => {
+    const t = s.textContent || "";
+    if (s.id === "__NEXT_DATA__") { try { dig(JSON.parse(t), username, posts); } catch {} }
+    if (t.includes("thread_items")) {
+      let m; const re = /"thread_items"\s*:\s*(\[[\s\S]*?\])/g;
+      while ((m = re.exec(t)) !== null) {
+        try { JSON.parse(m[1]).forEach(i => {
+          const p = i.post || i; const txt = (p.caption || {}).text || p.text || "";
+          if (txt && !posts.some(x => x.text === txt)) posts.push({ id: p.pk || uid(),
+            username: p.user?.username || username, text: txt,
+            timestamp: p.taken_at ? new Date(p.taken_at * 1000).toISOString() : "",
+            url: `https://www.threads.net/@${username}`, mediaCount: 0, likes: 0, replies: 0 });
+        }); } catch {}
+      }
+    }
+  });
+
+  if (!posts.length) {
+    const d = doc.querySelector('meta[property="og:description"]');
+    if (d?.content?.length > 10) {
+      const c = d.content.replace(/\s*\d+[KMB]?\s*(likes?|replies|reposts?)[\s,]*/gi, "").trim();
+      if (c) posts.push({ id: uid(), username, text: c, timestamp: "",
+        url: doc.querySelector('meta[property="og:url"]')?.content || "", mediaCount: 0, likes: 0, replies: 0 });
+    }
+  }
+  return posts;
+}
+
+function dig(obj, username, posts, depth = 0) {
+  if (depth > 10 || !obj || typeof obj !== "object") return;
+  if (Array.isArray(obj)) { obj.forEach(i => dig(i, username, posts, depth + 1)); return; }
+  if (obj.text && typeof obj.text === "string" && !posts.some(p => p.text === obj.text)) {
+    posts.push({ id: obj.id || uid(), username: obj.user?.username || username, text: obj.text,
+      timestamp: obj.taken_at ? new Date(obj.taken_at * 1000).toISOString() : "",
+      url: `https://www.threads.net/@${username}`, mediaCount: 0, likes: 0, replies: 0 });
+  }
+  Object.values(obj).forEach(v => dig(v, username, posts, depth + 1));
+}
+
+async function startFetch() {
+  const input = document.getElementById("urlInput").value.trim();
+  if (!input) { showToast("URLを入力してください"); return; }
+  const p = parseUrl(input);
+  if (!p) { showToast("有効なURLを入力してください"); return; }
+  const btn = document.getElementById("fetchBtn");
+  btn.disabled = true; btn.textContent = "取得中...";
+  currentUsername = p.username;
+
+  try {
+    const url = p.type === "post"
+      ? `https://www.threads.net/@${p.username}/post/${p.postId}`
+      : `https://www.threads.net/@${p.username}`;
+    setStatus(`<span class="hl">@${p.username}</span> を取得中...`, true);
+    const html = await fetchProxy(url);
+    let posts = parseHTML(html, p.username);
+
+    if (!posts.length && p.type === "profile") {
+      for (const sfx of ["/threads", "/replies"]) {
+        try { const h = await fetchProxy(`https://www.threads.net/@${p.username}${sfx}`);
+          parseHTML(h, p.username).forEach(x => { if (!posts.some(y => y.text === x.text)) posts.push(x); });
+        } catch {}
+      }
+    }
+
+    fetchedPostsList = posts;
+    renderFetched();
+    document.getElementById("fetchedCount").textContent = posts.length;
+
+    if (posts.length) {
+      document.getElementById("fetchedActions").style.display = "flex";
+      setStatus(`<span class="hl">${posts.length}件</span>取得しました`, false);
+      showToast(`${posts.length}件取得`);
+    } else {
+      setStatus(`プロキシでは取得できませんでした。<span class="hl">ブックマークレットの利用を推奨します。</span>`, false);
+    }
+  } catch (e) {
+    setStatus(`エラー: ${e.message} — <span class="hl">ブックマークレット推奨</span>`, false);
+  } finally { btn.disabled = false; btn.textContent = "取得"; }
+}
+
+// ========================================
+// RENDER
+// ========================================
+function renderFetched() {
+  const c = document.getElementById("fetchedPosts");
+  if (!fetchedPostsList.length) {
+    c.innerHTML = `<div class="empty-state"><div class="icon">@</div>
+      <p>「セットアップ」タブのブックマークレットで<br>確実に全投稿を取得できます</p></div>`;
+    document.getElementById("fetchedActions").style.display = "none";
+    return;
+  }
+  c.innerHTML = fetchedPostsList.map((p, i) => postCard(p, i, "fetched")).join("");
+}
+
+function renderSaved() {
+  const c = document.getElementById("savedPosts");
+  let saved = getSaved();
+  document.getElementById("savedCount").textContent = saved.length;
+
+  if (!saved.length) {
+    c.innerHTML = `<div class="empty-state"><div class="icon">---</div><p>保存済みの投稿はありません</p></div>`;
+    document.getElementById("savedActions").style.display = "none";
+    document.getElementById("searchWrap").style.display = "none";
+    document.getElementById("sortBar").style.display = "none";
+    return;
+  }
+
+  document.getElementById("savedActions").style.display = "flex";
+  document.getElementById("searchWrap").style.display = "block";
+  document.getElementById("sortBar").style.display = "flex";
+
+  // Filter
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    saved = saved.filter(p => p.text.toLowerCase().includes(q) || p.username.toLowerCase().includes(q));
+  }
+
+  // Sort
+  if (currentSort === "newest") saved.sort((a, b) => cmpDate(b, a));
+  else if (currentSort === "oldest") saved.sort((a, b) => cmpDate(a, b));
+
+  if (currentSort === "account") {
+    const grouped = {};
+    saved.forEach(p => { const u = p.username || "unknown"; (grouped[u] = grouped[u] || []).push(p); });
+    let html = "";
+    for (const [user, userPosts] of Object.entries(grouped)) {
+      html += `<div class="account-group"><div class="account-header">
+        <span>@${esc(user)}</span><span class="account-count">${userPosts.length}件</span></div>`;
+      userPosts.forEach(p => {
+        const gi = getSaved().findIndex(s => s.id === p.id);
+        html += postCard(p, gi, "saved");
+      });
+      html += `</div>`;
+    }
+    c.innerHTML = html || `<div class="empty-state"><p>検索結果なし</p></div>`;
+  } else {
+    if (!saved.length) {
+      c.innerHTML = `<div class="empty-state"><p>検索結果なし</p></div>`;
+    } else {
+      c.innerHTML = saved.map(p => {
+        const gi = getSaved().findIndex(s => s.id === p.id);
+        return postCard(p, gi, "saved");
+      }).join("");
+    }
+  }
+}
+
+function postCard(p, i, mode) {
+  const actions = mode === "fetched"
+    ? `<button class="post-btn" onclick="savePost(${i})">保存</button>
+       <button class="post-btn" onclick="copyText(${i},'fetched')">コピー</button>`
+    : `<button class="post-btn" onclick="copyText(${i},'saved')">コピー</button>
+       <button class="post-btn danger" onclick="deleteSaved(${i})">削除</button>`;
+
+  const meta = [];
+  if (p.likes) meta.push(`<span>${p.likes} likes</span>`);
+  if (p.replies) meta.push(`<span>${p.replies} replies</span>`);
+  if (p.mediaCount) meta.push(`<span>${p.mediaCount} media</span>`);
+
+  return `<div class="post-card">
+    <div class="post-header">
+      <span class="post-user">@${esc(p.username)}</span>
+      <span class="post-time">${p.timestamp ? fmtDate(p.timestamp) : ""}</span>
+    </div>
+    <div class="post-text">${esc(p.text)}</div>
+    ${meta.length ? `<div class="post-meta">${meta.join("")}</div>` : ""}
+    ${p.url ? `<div class="post-url"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.url)}</a></div>` : ""}
+    <div class="post-actions">${actions}</div>
+  </div>`;
+}
+
+// ========================================
+// ACTIONS
+// ========================================
+function savePost(i) {
+  const p = fetchedPostsList[i]; if (!p) return;
+  const s = getSaved();
+  if (s.some(x => x.text === p.text && x.username === p.username)) { showToast("既に保存済み"); return; }
+  s.push({ ...p, savedAt: new Date().toISOString() });
+  setSaved(s); showToast("保存しました");
+}
+
+function saveAllFetched() {
+  const s = getSaved(); let n = 0;
+  fetchedPostsList.forEach(p => {
+    if (!s.some(x => x.text === p.text && x.username === p.username)) {
+      s.push({ ...p, savedAt: new Date().toISOString() }); n++;
+    }
+  });
+  setSaved(s); showToast(`${n}件保存しました`);
+}
+
+function copyText(i, mode) {
+  const list = mode === "fetched" ? fetchedPostsList : getSaved();
+  if (!list[i]) return;
+  navigator.clipboard.writeText(list[i].text).then(() => showToast("コピーしました"));
+}
+
+function deleteSaved(i) {
+  const s = getSaved(); s.splice(i, 1); setSaved(s); renderSaved(); showToast("削除しました");
+}
+
+function clearAllSaved() {
+  if (!confirm("全ての保存済み投稿を削除しますか？")) return;
+  setSaved([]); renderSaved(); showToast("全削除しました");
+}
+
+function copyAllSaved() {
+  const s = getSaved();
+  if (!s.length) { showToast("データなし"); return; }
+  const t = s.map(p => `@${p.username}\n${p.text}${p.url ? "\n" + p.url : ""}`).join("\n\n---\n\n");
+  navigator.clipboard.writeText(t).then(() => showToast("全コピーしました"));
+}
+
+// ========================================
+// SEARCH / SORT
+// ========================================
+function onSearch() {
+  searchQuery = document.getElementById("searchInput").value.trim();
+  renderSaved();
+}
+
+function setSort(mode) {
+  currentSort = mode;
+  document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("sort" + mode.charAt(0).toUpperCase() + mode.slice(1)).classList.add("active");
+  renderSaved();
+}
+
+// ========================================
+// EXPORT
+// ========================================
+function exportJSON() {
+  const s = getSaved();
+  if (!s.length) { showToast("データなし"); return; }
+  dl(JSON.stringify(s, null, 2), `threads_${fileDate()}.json`, "application/json");
+  showToast("JSON出力しました");
+}
+
+function exportText() {
+  const s = getSaved();
+  if (!s.length) { showToast("データなし"); return; }
+  const grouped = {};
+  s.forEach(p => { (grouped[p.username || "unknown"] = grouped[p.username || "unknown"] || []).push(p); });
+  let t = `Threads投稿保存データ\n${new Date().toLocaleString("ja-JP")}\n${"=".repeat(50)}\n`;
+  for (const [u, posts] of Object.entries(grouped)) {
+    t += `\n${"─".repeat(40)}\n@${u} (${posts.length}件)\n${"─".repeat(40)}\n\n`;
+    posts.forEach((p, i) => {
+      t += `[${i + 1}] ${p.timestamp ? fmtDate(p.timestamp) : "日時不明"}\n${p.text}\n`;
+      if (p.url) t += `URL: ${p.url}\n`;
+      if (p.likes || p.replies) t += `likes:${p.likes||0} replies:${p.replies||0}\n`;
+      t += "\n";
+    });
+  }
+  dl(t, `threads_${fileDate()}.txt`, "text/plain");
+  showToast("TXT出力しました");
+}
+
+function dl(c, name, mime) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([c], { type: mime + ";charset=utf-8" }));
+  a.download = name; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+// ========================================
+// MANUAL ADD
+// ========================================
+function toggleManualAdd() {
+  const s = document.getElementById("manualSection"); s.classList.toggle("show");
+  if (s.classList.contains("show")) {
+    document.getElementById("manualUser").value = currentUsername ? `@${currentUsername}` : "";
+    document.getElementById("manualText").focus();
+  }
+}
+function closeManualAdd() { document.getElementById("manualSection").classList.remove("show"); }
+function submitManualPost() {
+  let u = document.getElementById("manualUser").value.trim().replace(/^@/, "");
+  const t = document.getElementById("manualText").value.trim();
+  if (!t) { showToast("本文を入力してください"); return; }
+  if (!u) u = "unknown";
+  fetchedPostsList.push({ id: uid(), username: u, text: t, timestamp: new Date().toISOString(),
+    url: "", mediaCount: 0, likes: 0, replies: 0 });
+  renderFetched();
+  document.getElementById("fetchedCount").textContent = fetchedPostsList.length;
+  document.getElementById("fetchedActions").style.display = "flex";
+  document.getElementById("manualText").value = "";
+  document.getElementById("manualSection").classList.remove("show");
+  showToast("追加しました");
+}
+
+// ========================================
+// TABS
+// ========================================
+const tabMap = { bookmarklet: "Bm", fetched: "Fetched", saved: "Saved" };
+function switchTab(tab) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+  document.getElementById("tab" + tabMap[tab]).classList.add("active");
+  document.getElementById("panel" + tabMap[tab]).classList.add("active");
+  if (tab === "saved") renderSaved();
+}
+
+// ========================================
+// STATUS
+// ========================================
+function setStatus(html, loading) {
+  const bar = document.getElementById("statusBar");
+  bar.classList.add("show");
+  document.getElementById("statusText").innerHTML = html;
+  const fill = document.getElementById("progressFill");
+  fill.classList.toggle("loading", loading);
+  if (!loading) fill.style.width = "100%";
+}
+
+// ========================================
+// UTILITIES
+// ========================================
+function esc(s) {
+  return !s ? "" : s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function fmtDate(s) {
+  try { const d = new Date(s); return isNaN(d) ? s : d.toLocaleString("ja-JP",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});} catch { return s; }
+}
+function cmpDate(a, b) {
+  const da = new Date(a.timestamp || a.savedAt || 0);
+  const db = new Date(b.timestamp || b.savedAt || 0);
+  return da - db;
+}
+function fileDate() {
+  const d = new Date(); const z = n => String(n).padStart(2, "0");
+  return `${d.getFullYear()}${z(d.getMonth()+1)}${z(d.getDate())}_${z(d.getHours())}${z(d.getMinutes())}`;
+}
+function uid() { return `${Date.now()}-${Math.random().toString(36).slice(2,8)}`; }
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 2500);
+}
+
+// ========================================
+// INIT
+// ========================================
+document.getElementById("urlInput").addEventListener("keydown", e => { if (e.key === "Enter") startFetch(); });
+updateStats();
+document.getElementById("footer").textContent = `v3.0 — ${new Date().toLocaleDateString("ja-JP")}`;
+
+// Auto-check clipboard on load
+setTimeout(checkClipboardForData, 500);
+</script>
+</body>
+</html>
