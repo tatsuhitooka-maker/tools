@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tools</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh; background: #0a0a0a;
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", system-ui, sans-serif;
+    color: #f5f5f5; padding: 40px 20px;
+  }
+  .container { max-width: 480px; margin: 0 auto; }
+  h1 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 24px; text-align: center; }
+  .tool-card {
+    display: block; background: #1a1a1a; border: 1px solid #2a2a2a;
+    border-radius: 14px; padding: 20px; margin-bottom: 10px;
+    text-decoration: none; color: inherit; transition: all 0.2s;
+  }
+  .tool-card:hover { border-color: #444; background: #1e1e1e; transform: translateY(-1px); }
+  .tool-name { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .tool-desc { font-size: 13px; color: #777; line-height: 1.6; }
+  .footer { text-align: center; font-size: 11px; color: #333; margin-top: 32px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Tools</h1>
+  <a class="tool-card" href="threads-auto-save.html">
+    <div class="tool-name">Threads投稿自動保存</div>
+    <div class="tool-desc">ThreadsのプロフィールURLから全投稿を取得・保存。ブックマークレット対応。</div>
+  </a>
+  <a class="tool-card" href="coconala-review-generator_v1_0224.html">
+    <div class="tool-name">ココナラ評価文ジェネレーター</div>
+    <div class="tool-desc">出品者から購入者への評価文をランダム生成。</div>
+  </a>
+</div>
+<div class="footer">Tools Collection</div>
+</body>
+</html>
