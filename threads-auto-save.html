@@ -551,17 +551,18 @@
 // BOOKMARKLET SOURCE
 // ========================================
 const BOOKMARKLET_SRC = `(async()=>{try{
+const V='v5';
 const S=m=>{let e=document.getElementById('_tsSaver');if(!e){e=document.createElement('div');e.id='_tsSaver';e.style.cssText='position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#000;color:#fff;padding:14px 20px;text-align:center;font-size:14px;font-family:system-ui,sans-serif;box-shadow:0 4px 24px rgba(0,0,0,0.6);transition:all 0.3s;';document.body.appendChild(e);}e.innerHTML=m;};
 const W=ms=>new Promise(r=>setTimeout(r,ms));
 if(!location.hostname.includes('threads.net')&&!location.hostname.includes('threads.com')){alert('threads.net \\u307e\\u305f\\u306f threads.com \\u3067\\u5b9f\\u884c\\u3057\\u3066\\u304f\\u3060\\u3055\\u3044');return;}
 const um=location.pathname.match(/@([\\w.]+)/);
 const username=um?um[1]:'unknown';
-S('\\u6e96\\u5099\\u4e2d...');await W(100);
-let sc=null;const ce=document.elementFromPoint(window.innerWidth/2,window.innerHeight/2);if(ce){let p=ce;while(p&&p!==document.body&&p!==document.documentElement){if(p.scrollHeight>p.clientHeight+100){sc=p;break;}p=p.parentElement;}}if(!sc){const m=document.querySelector('[role="main"]')||document.querySelector('main');if(m&&m.scrollHeight>m.clientHeight+100)sc=m;}
-S('\\u6295\\u7a3f\\u3092\\u8aad\\u307f\\u8fbc\\u307f\\u4e2d...'+(sc?'<br><small style="color:#4ecdc4">\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u5bfe\\u8c61\\u691c\\u51fa</small>':''));
+S(V+' \\u6e96\\u5099\\u4e2d...');await W(300);
+const doScroll=()=>{window.scrollBy({top:window.innerHeight*3,behavior:'auto'});window.scrollTo(0,document.body.scrollHeight);document.documentElement.scrollTop=document.documentElement.scrollHeight;document.body.scrollTop=document.body.scrollHeight;window.dispatchEvent(new Event('scroll',{bubbles:true}));document.dispatchEvent(new Event('scroll',{bubbles:true}));try{const m=document.querySelector('[role="main"]');if(m){m.scrollTop=m.scrollHeight;m.dispatchEvent(new Event('scroll',{bubbles:true}));}}catch{}try{const m=document.querySelector('main');if(m){m.scrollTop=m.scrollHeight;m.dispatchEvent(new Event('scroll',{bubbles:true}));}}catch{}};
+S(V+' \\u6295\\u7a3f\\u3092\\u8aad\\u307f\\u8fbc\\u307f\\u4e2d...');
 let prevC=0,same=0,rounds=0;
-while(same<6&&rounds<150){window.scrollTo(0,document.body.scrollHeight);document.documentElement.scrollTop=document.documentElement.scrollHeight;document.body.scrollTop=document.body.scrollHeight;if(sc)try{sc.scrollTop=sc.scrollHeight;}catch{}await W(1200);const c=document.querySelectorAll('[dir="auto"]').length;if(c===prevC)same++;else{same=0;prevC=c;}rounds++;if(rounds%3===0)S('\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u4e2d... '+rounds+'\\u56de<br><small style="color:#888">'+c+'\\u8981\\u7d20\\u691c\\u51fa</small>');}
-window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0;if(sc)try{sc.scrollTop=0;}catch{}await W(500);S('\\u6295\\u7a3f\\u3092\\u62bd\\u51fa\\u4e2d...');
+while(same<6&&rounds<100){doScroll();await W(1500);const c=document.querySelectorAll('[dir="auto"]').length;const sy=window.scrollY||document.documentElement.scrollTop||0;if(c===prevC)same++;else{same=0;prevC=c;}rounds++;S(V+' \\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u4e2d... '+rounds+'\\u56de<br><small style="color:#888">\\u8981\\u7d20:'+c+' / scroll:'+Math.round(sy)+'px / stop:'+same+'/6</small>');}
+window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0;await W(500);S(V+' \\u6295\\u7a3f\\u3092\\u62bd\\u51fa\\u4e2d... ('+prevC+'\\u8981\\u7d20)');
 const posts=[],seen=new Set();
 const skip=new Set(['Threads','Home','Search','Activity','Profile','Log in','Sign up','Replies','Reposts','Followers','Following','Follow','Verified','Edit profile','Share profile','threads.net','threads.com','See more','See less','Show replies','Hide replies','More','Post','Quote','Repost','Share','Copy link','Report','Block','Mute','Unfollow','Cancel',username,'@'+username]);
 const isUI=t=>{if(t.length<2||skip.has(t))return true;if(/^\\d+(\\.\\d+)?[KMB]?$/.test(t))return true;if(/^\\d+\\s*(likes?|replies|reposts?|followers?|following|posts?|hours?|minutes?|days?|weeks?|months?|years?|h|m|d|w|s)$/i.test(t))return true;if(/^(Just now|Yesterday|\\d+[hmdwys])$/i.test(t))return true;if(t.length<4&&!/[\\p{Script=Han}\\p{Script=Hiragana}\\p{Script=Katakana}]/u.test(t))return true;return false;};
