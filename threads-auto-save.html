@@ -556,14 +556,12 @@ const W=ms=>new Promise(r=>setTimeout(r,ms));
 if(!location.hostname.includes('threads.net')&&!location.hostname.includes('threads.com')){alert('threads.net \\u307e\\u305f\\u306f threads.com \\u3067\\u5b9f\\u884c\\u3057\\u3066\\u304f\\u3060\\u3055\\u3044');return;}
 const um=location.pathname.match(/@([\\w.]+)/);
 const username=um?um[1]:'unknown';
-S('\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u6e96\\u5099\\u4e2d...');
-const scrollEls=[];
-document.querySelectorAll('div,main,section').forEach(el=>{try{const s=getComputedStyle(el);if((s.overflowY==='auto'||s.overflowY==='scroll')&&el.scrollHeight>el.clientHeight+100)scrollEls.push(el);}catch{}});
-S('\\u5168\\u6295\\u7a3f\\u3092\\u8aad\\u307f\\u8fbc\\u307f\\u4e2d...<br><small style=color:#888>\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u5bfe\\u8c61: '+(scrollEls.length+1)+'\\u500b</small>');
-let prevH=0,same=0,rounds=0;
-const getH=()=>{let h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);scrollEls.forEach(el=>{try{if(el.scrollHeight>h)h=el.scrollHeight;}catch{}});return h;};
-while(same<5&&rounds<200){window.scrollTo(0,document.body.scrollHeight);window.scrollTo(0,document.documentElement.scrollHeight);scrollEls.forEach(el=>{try{el.scrollTop=el.scrollHeight;}catch{}});await W(800);const h=getH();if(h===prevH)same++;else same=0;prevH=h;rounds++;if(rounds%3===0)S('\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u4e2d... ('+rounds+'\\u56de)<br><small style=color:#888>\\u9ad8\\u3055:'+h+'px</small>');};
-window.scrollTo(0,0);scrollEls.forEach(el=>{try{el.scrollTop=0;}catch{}});await W(500);S('\\u6295\\u7a3f\\u3092\\u62bd\\u51fa\\u4e2d...');
+S('\\u6e96\\u5099\\u4e2d...');await W(100);
+let sc=null;const ce=document.elementFromPoint(window.innerWidth/2,window.innerHeight/2);if(ce){let p=ce;while(p&&p!==document.body&&p!==document.documentElement){if(p.scrollHeight>p.clientHeight+100){sc=p;break;}p=p.parentElement;}}if(!sc){const m=document.querySelector('[role="main"]')||document.querySelector('main');if(m&&m.scrollHeight>m.clientHeight+100)sc=m;}
+S('\\u6295\\u7a3f\\u3092\\u8aad\\u307f\\u8fbc\\u307f\\u4e2d...'+(sc?'<br><small style="color:#4ecdc4">\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u5bfe\\u8c61\\u691c\\u51fa</small>':''));
+let prevC=0,same=0,rounds=0;
+while(same<6&&rounds<150){window.scrollTo(0,document.body.scrollHeight);document.documentElement.scrollTop=document.documentElement.scrollHeight;document.body.scrollTop=document.body.scrollHeight;if(sc)try{sc.scrollTop=sc.scrollHeight;}catch{}await W(1200);const c=document.querySelectorAll('[dir="auto"]').length;if(c===prevC)same++;else{same=0;prevC=c;}rounds++;if(rounds%3===0)S('\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u4e2d... '+rounds+'\\u56de<br><small style="color:#888">'+c+'\\u8981\\u7d20\\u691c\\u51fa</small>');}
+window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0;if(sc)try{sc.scrollTop=0;}catch{}await W(500);S('\\u6295\\u7a3f\\u3092\\u62bd\\u51fa\\u4e2d...');
 const posts=[],seen=new Set();
 const skip=new Set(['Threads','Home','Search','Activity','Profile','Log in','Sign up','Replies','Reposts','Followers','Following','Follow','Verified','Edit profile','Share profile','threads.net','threads.com','See more','See less','Show replies','Hide replies','More','Post','Quote','Repost','Share','Copy link','Report','Block','Mute','Unfollow','Cancel',username,'@'+username]);
 const isUI=t=>{if(t.length<2||skip.has(t))return true;if(/^\\d+(\\.\\d+)?[KMB]?$/.test(t))return true;if(/^\\d+\\s*(likes?|replies|reposts?|followers?|following|posts?|hours?|minutes?|days?|weeks?|months?|years?|h|m|d|w|s)$/i.test(t))return true;if(/^(Just now|Yesterday|\\d+[hmdwys])$/i.test(t))return true;if(t.length<4&&!/[\\p{Script=Han}\\p{Script=Hiragana}\\p{Script=Katakana}]/u.test(t))return true;return false;};
