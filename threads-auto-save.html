@@ -259,6 +259,72 @@
   }
   .account-count { font-size: 11px; color: #555; font-weight: 400; }
 
+  /* AI Modal */
+  .ai-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85); z-index: 200;
+    display: none; align-items: center; justify-content: center;
+    padding: 16px;
+  }
+  .ai-overlay.show { display: flex; }
+  .ai-modal {
+    background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px;
+    width: 100%; max-width: 560px; max-height: 85vh; overflow-y: auto;
+    padding: 24px;
+  }
+  .ai-modal-title {
+    font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 16px;
+  }
+  .ai-modal-section { margin-bottom: 16px; }
+  .ai-modal-label {
+    font-size: 12px; color: #666; margin-bottom: 6px; font-weight: 600;
+    display: block;
+  }
+  .ai-select {
+    width: 100%; background: #111; border: 1px solid #2a2a2a; border-radius: 10px;
+    padding: 10px 14px; font-size: 14px; color: #fff; outline: none;
+    font-family: inherit;
+  }
+  .ai-topic-input {
+    width: 100%; background: #111; border: 1px solid #2a2a2a; border-radius: 10px;
+    padding: 10px 14px; font-size: 14px; color: #fff; outline: none;
+    font-family: inherit;
+  }
+  .ai-topic-input::placeholder { color: #444; }
+  .ai-prompt-preview {
+    background: #111; border: 1px solid #222; border-radius: 10px;
+    padding: 14px; font-size: 12px; color: #999; line-height: 1.7;
+    max-height: 200px; overflow-y: auto; white-space: pre-wrap; word-break: break-word;
+  }
+  .ai-btn-claude {
+    width: 100%;
+    background: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
+    color: #1a1a1a; border: none; border-radius: 10px;
+    padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer;
+    transition: all 0.2s; font-family: inherit; margin-top: 12px;
+  }
+  .ai-btn-claude:hover { background: linear-gradient(135deg, #e4b584 0%, #d4a57a 100%); }
+  .ai-btn-claude:active { transform: scale(0.98); }
+  .ai-btn-close {
+    width: 100%; background: none; border: 1px solid #2a2a2a; border-radius: 10px;
+    padding: 10px; font-size: 13px; color: #666; cursor: pointer;
+    transition: all 0.2s; font-family: inherit; margin-top: 8px;
+  }
+  .ai-btn-close:hover { border-color: #444; color: #aaa; }
+  .ai-action-bar {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;
+  }
+  .ai-action-btn {
+    background: #151520; border: 1px solid #2a3a5a; color: #7ab; font-size: 12px;
+    font-weight: 600; padding: 8px 14px; border-radius: 8px; cursor: pointer;
+    transition: all 0.2s; font-family: inherit;
+  }
+  .ai-action-btn:hover { background: #1a1a30; border-color: #3a5a8a; color: #9cf; }
+  .ai-action-label {
+    font-size: 11px; color: #555; display: flex; align-items: center;
+    margin-right: 4px; font-weight: 600;
+  }
+
   /* Footer */
   .footer { text-align: center; font-size: 10px; color: #333; margin-top: 20px; }
 
@@ -406,6 +472,12 @@
       <button class="action-btn danger" onclick="clearAllSaved()">全削除</button>
     </div>
 
+    <div class="ai-action-bar" id="aiActions" style="display:none;">
+      <span class="ai-action-label">Claude AI:</span>
+      <button class="ai-action-btn" onclick="showAIModal('tone')">トーマナ分析</button>
+      <button class="ai-action-btn" onclick="showAIModal('create')">投稿作成</button>
+    </div>
+
     <div class="search-wrap" id="searchWrap" style="display:none;">
       <input type="text" class="search-input" id="searchInput" placeholder="投稿を検索..." oninput="onSearch()">
     </div>
@@ -439,6 +511,38 @@
   <p class="footer" id="footer"></p>
 </div>
 
+<!-- AI Modal -->
+<div class="ai-overlay" id="aiOverlay" onclick="if(event.target===this)closeAIModal()">
+  <div class="ai-modal">
+    <div class="ai-modal-title" id="aiModalTitle">トーマナ分析</div>
+
+    <div class="ai-modal-section">
+      <label class="ai-modal-label">対象アカウント</label>
+      <select class="ai-select" id="aiAccountSelect" onchange="updateAIPrompt()">
+        <option value="__all__">全アカウント</option>
+      </select>
+    </div>
+
+    <div class="ai-modal-section" id="aiTopicSection" style="display:none;">
+      <label class="ai-modal-label">投稿テーマ（任意）</label>
+      <input type="text" class="ai-topic-input" id="aiTopicInput" placeholder="例: 朝の習慣について" oninput="updateAIPrompt()">
+    </div>
+
+    <div class="ai-modal-section" id="aiQuoteSection" style="display:none;">
+      <label class="ai-modal-label">引用する投稿</label>
+      <select class="ai-select" id="aiQuoteSelect" onchange="updateAIPrompt()"></select>
+    </div>
+
+    <div class="ai-modal-section">
+      <label class="ai-modal-label">生成されるプロンプト</label>
+      <div class="ai-prompt-preview" id="aiPromptPreview"></div>
+    </div>
+
+    <button class="ai-btn-claude" onclick="copyAndOpenClaude()">Claudeにコピーして開く</button>
+    <button class="ai-btn-close" onclick="closeAIModal()">閉じる</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -448,7 +552,7 @@
 const BOOKMARKLET_SRC = `(async()=>{
 const S=m=>{let e=document.getElementById('_tsSaver');if(!e){e=document.createElement('div');e.id='_tsSaver';e.style.cssText='position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#000;color:#fff;padding:14px 20px;text-align:center;font-size:14px;font-family:system-ui,sans-serif;box-shadow:0 4px 24px rgba(0,0,0,0.6);transition:all 0.3s;';document.body.appendChild(e);}e.innerHTML=m;};
 const W=ms=>new Promise(r=>setTimeout(r,ms));
-if(!location.hostname.includes('threads.net')){alert('threads.net\\u3067\\u5b9f\\u884c\\u3057\\u3066\\u304f\\u3060\\u3055\\u3044');return;}
+if(!location.hostname.includes('threads.net')&&!location.hostname.includes('threads.com')){alert('threads.net \\u307e\\u305f\\u306f threads.com \\u3067\\u5b9f\\u884c\\u3057\\u3066\\u304f\\u3060\\u3055\\u3044');return;}
 const um=location.pathname.match(/@([\\w.]+)/);
 const username=um?um[1]:'unknown';
 S('\\u5168\\u6295\\u7a3f\\u3092\\u8aad\\u307f\\u8fbc\\u307f\\u4e2d... <br><small style=color:#888>\\u81ea\\u52d5\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u4e2d\\u3001\\u3057\\u3070\\u3089\\u304f\\u304a\\u5f85\\u3061\\u304f\\u3060\\u3055\\u3044</small>');
@@ -456,18 +560,18 @@ let prevH=0,same=0,rounds=0;
 while(same<6&&rounds<300){window.scrollTo(0,document.body.scrollHeight);await W(1000);const h=document.body.scrollHeight;if(h===prevH)same++;else same=0;prevH=h;rounds++;if(rounds%8===0)S('\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u4e2d... ('+rounds+'\\u56de)');};
 window.scrollTo(0,0);await W(500);S('\\u6295\\u7a3f\\u3092\\u62bd\\u51fa\\u4e2d...');
 const posts=[],seen=new Set();
-const skip=new Set(['Threads','Home','Search','Activity','Profile','Log in','Sign up','Replies','Reposts','Followers','Following','Follow','Verified','Edit profile','Share profile','threads.net','See more','See less','Show replies','Hide replies','More','Post','Quote','Repost','Share','Copy link','Report','Block','Mute','Unfollow','Cancel',username,'@'+username]);
+const skip=new Set(['Threads','Home','Search','Activity','Profile','Log in','Sign up','Replies','Reposts','Followers','Following','Follow','Verified','Edit profile','Share profile','threads.net','threads.com','See more','See less','Show replies','Hide replies','More','Post','Quote','Repost','Share','Copy link','Report','Block','Mute','Unfollow','Cancel',username,'@'+username]);
 const isUI=t=>{if(t.length<2||skip.has(t))return true;if(/^\\d+(\\.\\d+)?[KMB]?$/.test(t))return true;if(/^\\d+\\s*(likes?|replies|reposts?|followers?|following|posts?|hours?|minutes?|days?|weeks?|months?|years?|h|m|d|w|s)$/i.test(t))return true;if(/^(Just now|Yesterday|\\d+[hmdwys])$/i.test(t))return true;if(t.length<4&&!/[\\p{Script=Han}\\p{Script=Hiragana}\\p{Script=Katakana}]/u.test(t))return true;return false;};
 const tEls=document.querySelectorAll('time[datetime]');
 const tMap=new Map();
 tEls.forEach(te=>{let p=te;for(let i=0;i<20;i++){p=p.parentElement;if(!p)break;tMap.set(p,te.getAttribute('datetime'));}});
 const findTime=el=>{let p=el;for(let i=0;i<20;i++){if(tMap.has(p))return tMap.get(p);p=p.parentElement;if(!p)break;}return '';};
-const findPostUrl=el=>{let p=el;for(let i=0;i<15;i++){p=p.parentElement;if(!p)break;const links=p.querySelectorAll('a[href*="/post/"]');if(links.length){const href=links[0].getAttribute('href');if(href)return href.startsWith('http')?href:'https://www.threads.net'+href;}}return '';};
+const findPostUrl=el=>{let p=el;for(let i=0;i<15;i++){p=p.parentElement;if(!p)break;const links=p.querySelectorAll('a[href*="/post/"]');if(links.length){const href=links[0].getAttribute('href');if(href)return href.startsWith('http')?href:location.origin+href;}}return '';};
 const findMedia=el=>{let p=el,n=0;for(let i=0;i<10;i++){p=p.parentElement;if(!p)break;n+=p.querySelectorAll('img[src*="scontent"],img[src*="cdninstagram"],video').length;}return n;};
 const findEngagement=el=>{let p=el;for(let i=0;i<12;i++){p=p.parentElement;if(!p)break;const btns=p.querySelectorAll('[role="button"]');let likes=0,replies=0;btns.forEach(b=>{const t=b.textContent.trim();const m=t.match(/^(\\d+)/);if(m){const v=parseInt(m[1]);if(t.match(/like/i)||b.querySelector('[aria-label*="like"],[aria-label*="Like"]'))likes=v;else if(t.match(/repl/i))replies=v;}});if(likes||replies)return{likes,replies};}return{likes:0,replies:0};};
 document.querySelectorAll('[dir="auto"]').forEach(el=>{const t=(el.innerText||'').trim();if(!t||seen.has(t)||isUI(t))return;if(el.closest('nav,header,[role="banner"],[role="navigation"],[role="dialog"]'))return;seen.add(t);
 const ts=findTime(el);const pUrl=findPostUrl(el);const media=findMedia(el);const eng=findEngagement(el);
-posts.push({id:'bm-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),username:username,text:t,timestamp:ts,url:pUrl||'https://www.threads.net/@'+username,mediaCount:media,likes:eng.likes,replies:eng.replies});});
+posts.push({id:'bm-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),username:username,text:t,timestamp:ts,url:pUrl||location.origin+'/@'+username,mediaCount:media,likes:eng.likes,replies:eng.replies});});
 if(!posts.length){S('<span style=color:#ff6b6b>\\u6295\\u7a3f\\u3092\\u691c\\u51fa\\u3067\\u304d\\u307e\\u305b\\u3093\\u3067\\u3057\\u305f</span>');await W(4000);document.getElementById('_tsSaver')?.remove();return;}
 const data='THREADS_EXPORT:'+JSON.stringify(posts);
 try{await navigator.clipboard.writeText(data);S('<span style=\\"color:#4ecdc4;font-size:18px\\">'+posts.length+'\\u4ef6\\u306e\\u6295\\u7a3f\\u3092\\u53d6\\u5f97</span><br><small style=color:#999>\\u30af\\u30ea\\u30c3\\u30d7\\u30dc\\u30fc\\u30c9\\u306b\\u30b3\\u30d4\\u30fc\\u6e08\\u307f\\u3002\\u4fdd\\u5b58\\u30c4\\u30fc\\u30eb\\u306b\\u623b\\u3063\\u3066\\u304f\\u3060\\u3055\\u3044\\u3002</small>');}
@@ -594,9 +698,9 @@ const PROXIES = [
 function parseUrl(url) {
   url = url.trim();
   if (/^@?[\w.]+$/.test(url)) return { type: "profile", username: url.replace(/^@/, "") };
-  const pm = url.match(/threads\.net\/@([\w.]+)\/?$/);
+  const pm = url.match(/threads\.(?:net|com)\/@([\w.]+)\/?$/);
   if (pm) return { type: "profile", username: pm[1] };
-  const pp = url.match(/threads\.net\/@([\w.]+)\/post\/([\w-]+)/);
+  const pp = url.match(/threads\.(?:net|com)\/@([\w.]+)\/post\/([\w-]+)/);
   if (pp) return { type: "post", username: pp[1], postId: pp[2] };
   return null;
 }
@@ -724,12 +828,14 @@ function renderSaved() {
   if (!saved.length) {
     c.innerHTML = `<div class="empty-state"><div class="icon">---</div><p>保存済みの投稿はありません</p></div>`;
     document.getElementById("savedActions").style.display = "none";
+    document.getElementById("aiActions").style.display = "none";
     document.getElementById("searchWrap").style.display = "none";
     document.getElementById("sortBar").style.display = "none";
     return;
   }
 
   document.getElementById("savedActions").style.display = "flex";
+  document.getElementById("aiActions").style.display = "flex";
   document.getElementById("searchWrap").style.display = "block";
   document.getElementById("sortBar").style.display = "flex";
 
@@ -774,6 +880,7 @@ function postCard(p, i, mode) {
     ? `<button class="post-btn" onclick="savePost(${i})">保存</button>
        <button class="post-btn" onclick="copyText(${i},'fetched')">コピー</button>`
     : `<button class="post-btn" onclick="copyText(${i},'saved')">コピー</button>
+       <button class="post-btn" onclick="openQuoteForPost(${i})">Claude引用</button>
        <button class="post-btn danger" onclick="deleteSaved(${i})">削除</button>`;
 
   const meta = [];
@@ -962,11 +1069,181 @@ function showToast(msg) {
 }
 
 // ========================================
+// CLAUDE AI INTEGRATION
+// ========================================
+let currentAIMode = "tone";
+let currentAIPrompt = "";
+
+function getUniqueAccounts() {
+  const s = getSaved();
+  return [...new Set(s.map(p => p.username))];
+}
+
+function getPostsByAccount(account) {
+  const s = getSaved();
+  if (account === "__all__") return s;
+  return s.filter(p => p.username === account);
+}
+
+function showAIModal(mode) {
+  currentAIMode = mode;
+  const overlay = document.getElementById("aiOverlay");
+  const title = document.getElementById("aiModalTitle");
+  const topicSection = document.getElementById("aiTopicSection");
+  const quoteSection = document.getElementById("aiQuoteSection");
+
+  // Set title
+  if (mode === "tone") title.textContent = "トーマナ分析";
+  else if (mode === "create") title.textContent = "投稿作成";
+  else if (mode === "quote") title.textContent = "引用投稿";
+
+  // Show/hide sections
+  topicSection.style.display = mode === "create" ? "block" : "none";
+  quoteSection.style.display = mode === "quote" ? "block" : "none";
+
+  // Populate account selector
+  const select = document.getElementById("aiAccountSelect");
+  const accounts = getUniqueAccounts();
+  select.innerHTML = `<option value="__all__">全アカウント</option>` +
+    accounts.map(a => `<option value="${esc(a)}">@${esc(a)}</option>`).join("");
+
+  // Populate quote post selector if needed
+  if (mode === "quote") {
+    populateQuoteSelect();
+  }
+
+  updateAIPrompt();
+  overlay.classList.add("show");
+}
+
+function closeAIModal() {
+  document.getElementById("aiOverlay").classList.remove("show");
+}
+
+function populateQuoteSelect(preselectedIndex) {
+  const sel = document.getElementById("aiQuoteSelect");
+  const saved = getSaved();
+  sel.innerHTML = saved.map((p, i) => {
+    const preview = p.text.length > 50 ? p.text.slice(0, 50) + "..." : p.text;
+    return `<option value="${i}" ${i === preselectedIndex ? "selected" : ""}>@${esc(p.username)}: ${esc(preview)}</option>`;
+  }).join("");
+}
+
+function openQuoteForPost(i) {
+  currentAIMode = "quote";
+  const overlay = document.getElementById("aiOverlay");
+  document.getElementById("aiModalTitle").textContent = "引用投稿";
+  document.getElementById("aiTopicSection").style.display = "none";
+  document.getElementById("aiQuoteSection").style.display = "block";
+
+  const accounts = getUniqueAccounts();
+  const select = document.getElementById("aiAccountSelect");
+  select.innerHTML = `<option value="__all__">全アカウント</option>` +
+    accounts.map(a => `<option value="${esc(a)}">@${esc(a)}</option>`).join("");
+
+  populateQuoteSelect(i);
+  updateAIPrompt();
+  overlay.classList.add("show");
+}
+
+function updateAIPrompt() {
+  const account = document.getElementById("aiAccountSelect").value;
+  let prompt = "";
+
+  if (currentAIMode === "tone") {
+    prompt = buildTonePrompt(account);
+  } else if (currentAIMode === "create") {
+    const topic = document.getElementById("aiTopicInput").value.trim();
+    prompt = buildCreatePrompt(account, topic);
+  } else if (currentAIMode === "quote") {
+    const quoteIdx = parseInt(document.getElementById("aiQuoteSelect").value);
+    prompt = buildQuotePrompt(account, quoteIdx);
+  }
+
+  currentAIPrompt = prompt;
+  document.getElementById("aiPromptPreview").textContent = prompt;
+}
+
+function formatPostsForPrompt(posts, maxPosts) {
+  const limited = maxPosts ? posts.slice(0, maxPosts) : posts;
+  return limited.map((p, i) =>
+    `[${i + 1}] @${p.username}${p.timestamp ? " (" + fmtDate(p.timestamp) + ")" : ""}\n${p.text}`
+  ).join("\n\n");
+}
+
+function buildTonePrompt(account) {
+  const posts = getPostsByAccount(account);
+  if (!posts.length) return "（対象の投稿がありません）";
+  const target = account === "__all__" ? "保存済み全アカウント" : `@${account}`;
+  return `以下は${target}のThreads投稿です。この投稿スタイルを詳しく分析してください。
+
+【分析してほしいポイント】
+- 文体（ですます調/だ・である調/口語体など）
+- よく使う言い回しや表現パターン
+- 絵文字・記号の使い方
+- 投稿の長さの傾向
+- トーン（カジュアル/フォーマル/ユーモア/毒舌など）
+- テーマや話題の傾向
+- 特徴的なクセや個性
+
+【投稿データ（${posts.length}件）】
+${formatPostsForPrompt(posts, 30)}`;
+}
+
+function buildCreatePrompt(account, topic) {
+  const posts = getPostsByAccount(account);
+  if (!posts.length) return "（対象の投稿がありません）";
+  const target = account === "__all__" ? "以下の投稿群" : `@${account}`;
+  const topicLine = topic ? `\n【テーマ】\n${topic}\n` : "";
+  return `以下は${target}のThreads投稿です。このトーン&マナー（文体、言い回し、雰囲気）を完全に再現して、新しい投稿を作成してください。
+${topicLine}
+【条件】
+- 上記の投稿スタイルを忠実に再現すること
+- Threadsに適した長さにすること
+- 3パターン提案してください
+- それぞれなぜそのスタイルにしたか簡単に説明してください
+
+【参考投稿（${posts.length}件）】
+${formatPostsForPrompt(posts, 30)}`;
+}
+
+function buildQuotePrompt(account, quoteIdx) {
+  const saved = getSaved();
+  const post = saved[quoteIdx];
+  if (!post) return "（投稿が選択されていません）";
+  const refPosts = getPostsByAccount(account);
+  const hasRef = refPosts.length > 0;
+  const refSection = hasRef ? `\n【参考にするトーン&マナー（${account === "__all__" ? "全アカウント" : "@" + account}の投稿）】\n${formatPostsForPrompt(refPosts, 15)}\n` : "";
+  return `以下のThreads投稿に対する引用投稿を作成してください。
+
+【引用元の投稿】
+@${post.username}: ${post.text}
+${refSection}
+【条件】
+- 自然な引用リプライとして成立すること${hasRef ? "\n- 上記の参考投稿のトーン&マナーを再現すること" : ""}
+- Threadsに適した長さにすること
+- 3パターン提案してください`;
+}
+
+function copyAndOpenClaude() {
+  if (!currentAIPrompt) { showToast("プロンプトがありません"); return; }
+  navigator.clipboard.writeText(currentAIPrompt).then(() => {
+    showToast("コピーしました — Claudeが開きます");
+    setTimeout(() => {
+      window.open("https://claude.ai/new", "_blank");
+    }, 500);
+    closeAIModal();
+  }).catch(() => {
+    showToast("コピーに失敗しました");
+  });
+}
+
+// ========================================
 // INIT
 // ========================================
 document.getElementById("urlInput").addEventListener("keydown", e => { if (e.key === "Enter") startFetch(); });
 updateStats();
-document.getElementById("footer").textContent = `v3.0 — ${new Date().toLocaleDateString("ja-JP")}`;
+document.getElementById("footer").textContent = `v4.0 — ${new Date().toLocaleDateString("ja-JP")}`;
 
 // Auto-check clipboard on load
 setTimeout(checkClipboardForData, 500);
