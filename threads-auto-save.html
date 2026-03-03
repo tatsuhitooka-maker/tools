@@ -549,16 +549,20 @@
 // ========================================
 // BOOKMARKLET SOURCE
 // ========================================
-const BOOKMARKLET_SRC = `(async()=>{
+const BOOKMARKLET_SRC = `(async()=>{try{
 const S=m=>{let e=document.getElementById('_tsSaver');if(!e){e=document.createElement('div');e.id='_tsSaver';e.style.cssText='position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#000;color:#fff;padding:14px 20px;text-align:center;font-size:14px;font-family:system-ui,sans-serif;box-shadow:0 4px 24px rgba(0,0,0,0.6);transition:all 0.3s;';document.body.appendChild(e);}e.innerHTML=m;};
 const W=ms=>new Promise(r=>setTimeout(r,ms));
 if(!location.hostname.includes('threads.net')&&!location.hostname.includes('threads.com')){alert('threads.net \\u307e\\u305f\\u306f threads.com \\u3067\\u5b9f\\u884c\\u3057\\u3066\\u304f\\u3060\\u3055\\u3044');return;}
 const um=location.pathname.match(/@([\\w.]+)/);
 const username=um?um[1]:'unknown';
-S('\\u5168\\u6295\\u7a3f\\u3092\\u8aad\\u307f\\u8fbc\\u307f\\u4e2d... <br><small style=color:#888>\\u81ea\\u52d5\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u4e2d\\u3001\\u3057\\u3070\\u3089\\u304f\\u304a\\u5f85\\u3061\\u304f\\u3060\\u3055\\u3044</small>');
+S('\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u6e96\\u5099\\u4e2d...');
+const scrollEls=[];
+document.querySelectorAll('div,main,section').forEach(el=>{try{const s=getComputedStyle(el);if((s.overflowY==='auto'||s.overflowY==='scroll')&&el.scrollHeight>el.clientHeight+100)scrollEls.push(el);}catch{}});
+S('\\u5168\\u6295\\u7a3f\\u3092\\u8aad\\u307f\\u8fbc\\u307f\\u4e2d...<br><small style=color:#888>\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u5bfe\\u8c61: '+(scrollEls.length+1)+'\\u500b</small>');
 let prevH=0,same=0,rounds=0;
-while(same<6&&rounds<300){window.scrollTo(0,document.body.scrollHeight);await W(1000);const h=document.body.scrollHeight;if(h===prevH)same++;else same=0;prevH=h;rounds++;if(rounds%8===0)S('\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u4e2d... ('+rounds+'\\u56de)');};
-window.scrollTo(0,0);await W(500);S('\\u6295\\u7a3f\\u3092\\u62bd\\u51fa\\u4e2d...');
+const getH=()=>{let h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);scrollEls.forEach(el=>{try{if(el.scrollHeight>h)h=el.scrollHeight;}catch{}});return h;};
+while(same<5&&rounds<200){window.scrollTo(0,document.body.scrollHeight);window.scrollTo(0,document.documentElement.scrollHeight);scrollEls.forEach(el=>{try{el.scrollTop=el.scrollHeight;}catch{}});await W(800);const h=getH();if(h===prevH)same++;else same=0;prevH=h;rounds++;if(rounds%3===0)S('\\u30b9\\u30af\\u30ed\\u30fc\\u30eb\\u4e2d... ('+rounds+'\\u56de)<br><small style=color:#888>\\u9ad8\\u3055:'+h+'px</small>');};
+window.scrollTo(0,0);scrollEls.forEach(el=>{try{el.scrollTop=0;}catch{}});await W(500);S('\\u6295\\u7a3f\\u3092\\u62bd\\u51fa\\u4e2d...');
 const posts=[],seen=new Set();
 const skip=new Set(['Threads','Home','Search','Activity','Profile','Log in','Sign up','Replies','Reposts','Followers','Following','Follow','Verified','Edit profile','Share profile','threads.net','threads.com','See more','See less','Show replies','Hide replies','More','Post','Quote','Repost','Share','Copy link','Report','Block','Mute','Unfollow','Cancel',username,'@'+username]);
 const isUI=t=>{if(t.length<2||skip.has(t))return true;if(/^\\d+(\\.\\d+)?[KMB]?$/.test(t))return true;if(/^\\d+\\s*(likes?|replies|reposts?|followers?|following|posts?|hours?|minutes?|days?|weeks?|months?|years?|h|m|d|w|s)$/i.test(t))return true;if(/^(Just now|Yesterday|\\d+[hmdwys])$/i.test(t))return true;if(t.length<4&&!/[\\p{Script=Han}\\p{Script=Hiragana}\\p{Script=Katakana}]/u.test(t))return true;return false;};
@@ -576,7 +580,8 @@ if(!posts.length){S('<span style=color:#ff6b6b>\\u6295\\u7a3f\\u3092\\u691c\\u51
 const data='THREADS_EXPORT:'+JSON.stringify(posts);
 try{await navigator.clipboard.writeText(data);S('<span style=\\"color:#4ecdc4;font-size:18px\\">'+posts.length+'\\u4ef6\\u306e\\u6295\\u7a3f\\u3092\\u53d6\\u5f97</span><br><small style=color:#999>\\u30af\\u30ea\\u30c3\\u30d7\\u30dc\\u30fc\\u30c9\\u306b\\u30b3\\u30d4\\u30fc\\u6e08\\u307f\\u3002\\u4fdd\\u5b58\\u30c4\\u30fc\\u30eb\\u306b\\u623b\\u3063\\u3066\\u304f\\u3060\\u3055\\u3044\\u3002</small>');}
 catch(e){const ta=document.createElement('textarea');ta.value=data;ta.style.cssText='width:90%;height:60px;margin:8px auto;display:block;background:#111;color:#fff;border:1px solid #444;border-radius:8px;padding:8px;font-size:11px;';const c=document.getElementById('_tsSaver');c.innerHTML='<span style=\\"color:#4ecdc4;font-size:16px\\">'+posts.length+'\\u4ef6\\u53d6\\u5f97</span><br><small style=color:#999>\\u4e0b\\u306e\\u30c6\\u30ad\\u30b9\\u30c8\\u3092\\u5168\\u9078\\u629e\\u3057\\u3066\\u30b3\\u30d4\\u30fc\\u3057\\u3066\\u304f\\u3060\\u3055\\u3044</small>';c.appendChild(ta);ta.select();}
-setTimeout(()=>document.getElementById('_tsSaver')?.remove(),30000);})();`;
+setTimeout(()=>document.getElementById('_tsSaver')?.remove(),30000);
+}catch(err){const S=m=>{let e=document.getElementById('_tsSaver');if(!e){e=document.createElement('div');e.id='_tsSaver';e.style.cssText='position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#000;color:#fff;padding:14px 20px;text-align:center;font-size:14px;font-family:system-ui,sans-serif;box-shadow:0 4px 24px rgba(0,0,0,0.6);';document.body.appendChild(e);}e.innerHTML=m;};S('<span style=color:#ff6b6b>\\u30a8\\u30e9\\u30fc: '+err.message+'</span><br><small style=color:#888>\\u30da\\u30fc\\u30b8\\u3092\\u30ea\\u30ed\\u30fc\\u30c9\\u3057\\u3066\\u518d\\u5ea6\\u304a\\u8a66\\u3057\\u304f\\u3060\\u3055\\u3044</small>');setTimeout(()=>document.getElementById('_tsSaver')?.remove(),10000);}})();`;
 
 document.getElementById("bookmarkletLink").href =
   "javascript:" + encodeURIComponent(BOOKMARKLET_SRC);
